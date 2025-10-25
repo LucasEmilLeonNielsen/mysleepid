@@ -83,6 +83,53 @@
     color: var(--sleepid-ink-1);
     position: relative;
     overflow: hidden;
+     transition: transform 0.6s ease, opacity 0.6s ease;
+    --sleepid-fullscreen-enter-y: 0px;
+  }
+  body[data-sleepid-quiz-open] {
+    overflow: hidden;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] {
+    position: fixed;
+    inset: 0;
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    z-index: 9998;
+    overflow-y: auto;
+    background: linear-gradient(140deg, var(--sleepid-bg-0), var(--sleepid-bg-1));
+    padding: 0;
+    transform: translate3d(0, var(--sleepid-fullscreen-enter-y), 0);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"][data-fullscreen-state="settled"] {
+    transform: translate3d(0, 0, 0);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_section_surface {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(48px, 6vw, 96px) clamp(24px, 6vw, 72px);
+    align-items: center;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_quiz_card {
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+    transform-origin: center center;
+    will-change: transform, box-shadow;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_quiz_card {
+    width: min(88vw, 760px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18);
+    transform: scale(1.02);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_card_inner {
+    overflow-y: auto;
+    min-height: clamp(420px, 70vh, 720px);
+    max-height: calc(100dvh - clamp(80px, 12vh, 180px));
+    scrollbar-gutter: stable both-edges;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_gradual_blur {
+    display: none;
   }
   #sleepid-quiz-section-{{ section.id }} *,
   #sleepid-quiz-section-{{ section.id }} *::before,
@@ -130,6 +177,12 @@
     100% { transform: translateX(-6%); }
   }
   @media (prefers-reduced-motion: reduce) {
+      #sleepid-quiz-section-{{ section.id }} {
+      transition: none;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_quiz_card {
+      transition: none;
+    }
     #sleepid-quiz-section-{{ section.id }} .sleepid_threads::before,
     #sleepid-quiz-section-{{ section.id }} .sleepid_threads::after {
       animation: none;
@@ -1272,6 +1325,8 @@
     const startBtn = rootEl.querySelector('[data-sleepid-start]');
     const surface = rootEl.querySelector('[data-sleepid-surface]');
     const chimeEl = rootEl.querySelector('[data-sleepid-chime]');
+     let fullscreenPlaceholder = null;
+    let fullscreenBodyOverflow = '';
     const productImages = {
       A: '{{ section.settings.result_image_aurora | image_url }}',
       B: '{{ section.settings.result_image_day | image_url }}',
@@ -1406,6 +1461,69 @@
           playPromise.catch(function() {});
         }
       } catch (err) {}
+    }
+
+     function enterFullscreenExperience() {
+      if (!rootEl || rootEl.getAttribute('data-fullscreen') === 'true') {
+        return;
+      }
+      if (fullscreenPlaceholder && fullscreenPlaceholder.parentNode) {
+        fullscreenPlaceholder.parentNode.removeChild(fullscreenPlaceholder);
+      }
+      const rect = rootEl.getBoundingClientRect();
+      const placeholder = document.createElement('div');
+      placeholder.setAttribute('data-sleepid-fullscreen-placeholder', 'true');
+      const computedStyle = window.getComputedStyle(rootEl);
+      placeholder.style.display = 'block';
+      placeholder.style.width = computedStyle.width;
+      if (computedStyle.maxWidth && computedStyle.maxWidth !== 'none') {
+        placeholder.style.maxWidth = computedStyle.maxWidth;
+      }
+      if (computedStyle.minWidth && computedStyle.minWidth !== 'auto') {
+        placeholder.style.minWidth = computedStyle.minWidth;
+      }
+      placeholder.style.height = rect.height + 'px';
+      placeholder.style.margin = computedStyle.margin;
+      placeholder.style.pointerEvents = 'none';
+      placeholder.style.visibility = 'hidden';
+      placeholder.setAttribute('aria-hidden', 'true');
+      if (rootEl.parentNode) {
+        rootEl.parentNode.insertBefore(placeholder, rootEl);
+      }
+      fullscreenPlaceholder = placeholder;
+      fullscreenBodyOverflow = document.body.style.overflow || '';
+      document.body.setAttribute('data-sleepid-quiz-open', rootId);
+      document.body.style.overflow = 'hidden';
+      const offsetY = rect.top;
+      rootEl.style.setProperty('--sleepid-fullscreen-enter-y', offsetY + 'px');
+      rootEl.removeAttribute('data-fullscreen-state');
+      rootEl.setAttribute('data-fullscreen', 'true');
+      window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(function() {
+          rootEl.setAttribute('data-fullscreen-state', 'settled');
+          rootEl.scrollTop = 0;
+        });
+      });
+    }
+
+    function exitFullscreenExperience() {
+      if (!rootEl || rootEl.getAttribute('data-fullscreen') !== 'true') {
+        return;
+      }
+      rootEl.removeAttribute('data-fullscreen-state');
+      rootEl.removeAttribute('data-fullscreen');
+      rootEl.style.removeProperty('--sleepid-fullscreen-enter-y');
+      if (fullscreenPlaceholder && fullscreenPlaceholder.parentNode) {
+        fullscreenPlaceholder.parentNode.removeChild(fullscreenPlaceholder);
+      }
+      fullscreenPlaceholder = null;
+      if (document.body.getAttribute('data-sleepid-quiz-open') === rootId) {
+        if (!document.body.hasAttribute('data-sleepid-cinematic-open')) {
+          document.body.style.overflow = fullscreenBodyOverflow;
+        }
+        document.body.removeAttribute('data-sleepid-quiz-open');
+      }
+      fullscreenBodyOverflow = '';
     }
 
     function clearAnalyzingTimers() {
@@ -2127,6 +2245,7 @@
     }
 
     function resetQuiz() {
+      exitFullscreenExperience();
       currentIndex = -1;
       answers.fill(null);
       resultType = null;
@@ -2153,6 +2272,7 @@
     }
 
     function handleStart() {
+      enterFullscreenExperience();
       goToQuestion(0);
     }
 
@@ -2161,8 +2281,12 @@
     }
 
     rootEl.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' && currentIndex > -1 && currentIndex < questions.length) {
-        resetQuiz();
+          if (event.key === 'Escape') {
+        const isFullscreen = rootEl.getAttribute('data-fullscreen') === 'true';
+        if (isFullscreen || (currentIndex > -1 && currentIndex < questions.length)) {
+          event.preventDefault();
+          resetQuiz();
+        }
       }
     });
 
@@ -2183,7 +2307,6 @@
       "type": "url",
       "id": "logo_url",
       "label": "Logo URL",
-      "default": "https://cdn.shopify.com/s/files/.../yourlogo.svg"
     },
     {
       "type": "text",
@@ -2235,7 +2358,6 @@
       "type": "url",
       "id": "chime_url",
       "label": "Chime audio URL",
-      "default": "https://cdn.shopify.com/s/files/.../chime.mp3"
     },
     {
       "type": "color",
