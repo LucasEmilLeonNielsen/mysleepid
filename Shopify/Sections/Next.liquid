@@ -1,0 +1,2464 @@
+<section id="sleepid-quiz-section-{{ section.id }}" class="sleepid_quiz_section">
+  <div class="sleepid_section_surface" data-sleepid-surface>
+    <div class="sleepid_threads" aria-hidden="true"></div>
+    <div class="sleepid_fingerprint" aria-hidden="true"></div>
+    <div class="sleepid_quiz_card">
+      <div class="sleepid_card_shimmer" aria-hidden="true"></div>
+      <div class="sleepid_card_inner">
+        <div class="sleepid_logo_wrap">
+          <img class="sleepid_logo" src="{{ section.settings.logo_url | escape }}" alt="{{ shop.name }} logo" />
+          <div class="sleepid_logo_shimmer" aria-hidden="true"></div>
+        </div>
+        <div class="sleepid_progress_region" aria-live="polite">
+          <div class="sleepid_progress_meta">
+            <p class="sleepid_progress_label">SleepID Rhythm Tracker</p>
+            <div class="sleepid_progress_bar">
+              <div class="sleepid_progress_fill" data-sleepid-progress-fill style="width:0%"></div>
+            </div>
+          </div>
+          <div class="sleepid_progress_ring" data-sleepid-progress-ring>
+            <svg viewBox="0 0 120 120" class="sleepid_progress_svg" role="img" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" class="sleepid_progress_bg"></circle>
+              <circle cx="60" cy="60" r="52" class="sleepid_progress_path" data-sleepid-progress-path></circle>
+            </svg>
+            <div class="sleepid_progress_value" data-sleepid-progress-value>0%</div>
+            <div class="sleepid_progress_pulse" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="sleepid_stage" data-sleepid-stage aria-live="polite" aria-atomic="true">
+          <div class="sleepid_stage_panel sleepid_fade_content" data-stage="intro">
+            <h2 class="sleepid_heading" id="sleepid-quiz-heading-{{ section.id }}">Begin your Sleepsona</h2>
+            <div class="sleepid_credibility" data-sleepid-credibility>
+              <span>{{ section.settings.credibility_text | escape }}</span>
+            </div>
+            <p class="sleepid_intro_text">Take a slow, guided journey to map your biological rhythm. We’ll breathe together, one question at a time.</p>
+            <button type="button" class="sleepid_primary_btn" data-sleepid-start>
+              <span>Enter the SleepID Quiz</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sleepid_gradual_blur sleepid_gradual_blur--top" aria-hidden="true"></div>
+    <div class="sleepid_gradual_blur sleepid_gradual_blur--bottom" aria-hidden="true"></div>
+  </div>
+  <audio data-sleepid-chime src="{{ section.settings.chime_url | escape }}" preload="auto"></audio>
+  <script type="application/json" id="sleepid-quiz-data-{{ section.id }}">
+    {
+      "klaviyoList": {{ section.settings.klaviyo_list_id | json }},
+      "colors": {
+        "bg0": {{ section.settings.bg_0 | json }},
+        "bg1": {{ section.settings.bg_1 | json }},
+        "ink1": {{ section.settings.ink_1 | json }},
+        "ink2": {{ section.settings.ink_2 | json }}
+      },
+      "credibilityText": {{ section.settings.credibility_text | json }},
+      "analyzeLabel": {{ section.settings.analyze_button_label | json }},
+      "analyzeDuration": {{ section.settings.analyze_duration_seconds | json }},
+      "scienceContexts": {
+        {% assign context_blocks = section.blocks | where: 'type', 'science_context' %}
+        {% for block in context_blocks %}
+          {{ block.settings.question_id | json }}: {{ block.settings.science_context | json }}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      }
+    }
+  </script>
+</section>
+<style>
+  #sleepid-quiz-section-{{ section.id }} {
+    --sleepid-bg-0: {{ section.settings.bg_0 }};
+    --sleepid-bg-1: {{ section.settings.bg_1 }};
+    --sleepid-ink-1: {{ section.settings.ink_1 }};
+    --sleepid-ink-2: {{ section.settings.ink_2 }};
+    --sleepid-accent: #eae4dc;
+    --sleepid-muted: rgba(255,255,255,0.75);
+    --sleepid-border: rgba(0,0,0,0.06);
+    --sleepid-shadow: 0 30px 60px rgba(0,0,0,0.08);
+    --sleepid-card-radius: 24px;
+    --sleepid-btn-radius: 14px;
+    --sleepid-progress-size: 120px;
+    --sleepid-thread-color: rgba(152,160,166,0.08);
+    --sleepid-thread-glow: rgba(234,228,220,0.35);
+    font-family: "Inter", "Manrope", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--sleepid-ink-1);
+    position: relative;
+    overflow: hidden;
+     transition: transform 0.6s ease, opacity 0.6s ease;
+    --sleepid-fullscreen-enter-y: 0px;
+  }
+  body[data-sleepid-quiz-open] {
+    overflow: hidden;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] {
+    position: fixed;
+    inset: 0;
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    z-index: 9998;
+    overflow-y: auto;
+    background: linear-gradient(140deg, var(--sleepid-bg-0), var(--sleepid-bg-1));
+    padding: 0;
+    transform: translate3d(0, var(--sleepid-fullscreen-enter-y), 0);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"][data-fullscreen-state="settled"] {
+    transform: translate3d(0, 0, 0);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_section_surface {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(48px, 6vw, 96px) clamp(24px, 6vw, 72px);
+    align-items: center;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_quiz_card {
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+    transform-origin: center center;
+    will-change: transform, box-shadow;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_quiz_card {
+    width: min(88vw, 760px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18);
+    transform: scale(1.02);
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_card_inner {
+    overflow-y: auto;
+    min-height: clamp(420px, 70vh, 720px);
+    max-height: calc(100dvh - clamp(80px, 12vh, 180px));
+    scrollbar-gutter: stable both-edges;
+  }
+  #sleepid-quiz-section-{{ section.id }}[data-fullscreen="true"] .sleepid_gradual_blur {
+    display: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} *,
+  #sleepid-quiz-section-{{ section.id }} *::before,
+  #sleepid-quiz-section-{{ section.id }} *::after {
+    box-sizing: border-box;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_section_surface {
+    position: relative;
+    padding: clamp(48px, 8vw, 80px) 0;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(140deg, var(--sleepid-bg-0), var(--sleepid-bg-1));
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_threads {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.25), transparent 60%);
+    mix-blend-mode: screen;
+    overflow: hidden;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_threads::before,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_threads::after {
+    content: '';
+    position: absolute;
+    inset: -120px;
+    background: repeating-linear-gradient(
+      115deg,
+      transparent 0 40px,
+      var(--sleepid-thread-color) 40px 44px,
+      transparent 44px 92px
+    );
+    opacity: 0.65;
+    animation: sleepidThreadsDrift 16s linear infinite;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_threads::after {
+    animation-duration: 22s;
+    animation-direction: reverse;
+    opacity: 0.35;
+  }
+  @keyframes sleepidThreadsDrift {
+    0% { transform: translateX(-6%); }
+    50% { transform: translateX(6%); }
+    100% { transform: translateX(-6%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+      #sleepid-quiz-section-{{ section.id }} {
+      transition: none;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_quiz_card {
+      transition: none;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_threads::before,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_threads::after {
+      animation: none;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_logo,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_logo_shimmer,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_progress_value,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_progress_pulse,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn::after,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_heading,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_fade_content,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_reveal,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_cinematic_ambient,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_shell,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_product {
+      animation: none;
+    }
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_shell,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_visual,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_product {
+      transition: none;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::before,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::after {
+      animation: none !important;
+    }
+    #sleepid-quiz-section-{{ section.id }} .sleepid_fade_content {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_fingerprint {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 12%, rgba(152,160,166,0.12) 0, transparent 55%),
+      radial-gradient(circle at 50% 90%, rgba(152,160,166,0.08) 0, transparent 65%),
+      repeating-radial-gradient(circle at 50% 30%, rgba(152,160,166,0.08) 0 1px, transparent 1px 12px);
+    opacity: 0.55;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_quiz_card {
+    position: relative;
+    width: min(92vw, 720px);
+    padding: 2px;
+    border-radius: var(--sleepid-card-radius);
+    background: linear-gradient(140deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    z-index: 1;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_card_shimmer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.4), transparent 60%),
+      linear-gradient(120deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+    opacity: 0.75;
+    filter: blur(0.5px);
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_card_inner {
+    position: relative;
+    background: rgba(255,255,255,0.9);
+    border-radius: calc(var(--sleepid-card-radius) - 2px);
+    border: 1px solid var(--sleepid-border);
+    box-shadow: var(--sleepid-shadow);
+    padding: clamp(24px, 5vw, 36px);
+    display: grid;
+    gap: clamp(20px, 3vw, 28px);
+    overflow: hidden;
+    min-height: 520px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_card_inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+    mix-blend-mode: lighten;
+    pointer-events: none;
+  }
+  .sleepid_result_cinematic_overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background: transparent;
+  }
+  .sleepid_result_cinematic_overlay[data-state="open"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sleepid_result_cinematic_overlay[data-state="closing"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_logo_wrap {
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_logo {
+    max-width: clamp(56px, 8vw, 76px);
+    width: 100%;
+    height: auto;
+    animation: sleepidLogoBreath 9s ease-in-out infinite;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_logo_shimmer {
+    position: absolute;
+    inset: auto;
+    top: 50%;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.7), rgba(255,255,255,0.05));
+    mask-image: radial-gradient(circle, rgba(0,0,0,0.65) 40%, transparent 72%);
+    mix-blend-mode: screen;
+    animation: sleepidLogoShimmer 12s ease-in-out infinite;
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  @keyframes sleepidLogoBreath {
+    0%, 100% { transform: scale(1); opacity: 0.84; }
+    50% { transform: scale(1.03); opacity: 0.98; }
+  }
+  @keyframes sleepidLogoShimmer {
+    0% { transform: translate(-8%, -8%) scale(0.96); opacity: 0.55; }
+    50% { transform: translate(8%, 8%) scale(1.02); opacity: 0.85; }
+    100% { transform: translate(-8%, -8%) scale(0.96); opacity: 0.55; }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_region {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(16px, 4vw, 24px);
+    z-index: 1;
+  }
+  @media (max-width: 720px) {
+    #sleepid-quiz-section-{{ section.id }} .sleepid_progress_region {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_meta {
+    display: grid;
+    gap: 12px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_label {
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sleepid-ink-2);
+    margin: 0;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(152,160,166,0.16);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(152,160,166,0.9), rgba(234,228,220,0.9));
+    border-radius: inherit;
+    transition: width 0.4s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_ring {
+    position: relative;
+    width: var(--sleepid-progress-size);
+    height: var(--sleepid-progress-size);
+    display: grid;
+    place-items: center;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_bg {
+    fill: none;
+    stroke: rgba(152,160,166,0.18);
+    stroke-width: 6;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_path {
+    fill: none;
+    stroke: rgba(152,160,166,0.9);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 327;
+    stroke-dashoffset: 327;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_value {
+    position: absolute;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--sleepid-ink-1);
+    animation: sleepidBreathe 6s ease-in-out infinite;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_progress_pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgba(234,228,220,0.45);
+    animation: sleepidPulseRing 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sleepidBreathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.04); opacity: 1; }
+  }
+  @keyframes sleepidPulseRing {
+    0% { transform: scale(0.94); opacity: 0.4; }
+    60% { transform: scale(1.05); opacity: 0.7; }
+    100% { transform: scale(0.94); opacity: 0.4; }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_stage {
+    position: relative;
+    display: grid;
+    min-height: 280px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_stage_panel {
+    display: grid;
+    gap: clamp(16px, 3vw, 22px);
+    align-content: start;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_fade_content {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: sleepidFadeContent 0.7s ease forwards;
+  }
+  @keyframes sleepidFadeContent {
+    0% { opacity: 0; transform: translateY(18px); filter: blur(8px); }
+    80% { filter: blur(2px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes sleepidShinyText {
+    0% { background-position: 200% 50%; }
+    45% { background-position: 100% 50%; }
+    100% { background-position: -20% 50%; }
+  }
+  @keyframes sleepidStarBorder {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_heading {
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    font-weight: 600;
+    margin: 0;
+    color: var(--sleepid-ink-1);
+    position: relative;
+    background: linear-gradient(120deg, rgba(88,96,104,0.92), rgba(234,228,220,0.95), rgba(88,96,104,0.92));
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: sleepidShinyText 6s ease-in-out infinite;
+    text-shadow: 0 6px 18px rgba(255,255,255,0.35);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_intro_text,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_body_text {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 92%, #111 8%);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_credibility {
+    position: relative;
+    padding-top: 12px;
+    margin: -4px 0 2px;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    color: #a0a0a0;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_credibility::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72px;
+    height: 1px;
+    background: rgba(0,0,0,0.08);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_credibility span {
+    display: block;
+    opacity: 0;
+    animation: sleepidFadeContent 0.7s ease forwards;
+    animation-delay: 0.18s;
+  }
+  @supports not (color-mix(in srgb, #000 50%, #fff 50%)) {
+    #sleepid-quiz-section-{{ section.id }} .sleepid_intro_text,
+    #sleepid-quiz-section-{{ section.id }} .sleepid_body_text {
+      color: var(--sleepid-ink-1);
+    }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_question_nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_back_btn,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_secondary_btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(152,160,166,0.3);
+    background: rgba(255,255,255,0.75);
+    color: var(--sleepid-ink-1);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_back_btn {
+    padding-inline: 1.1rem;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_back_btn .sleepid_back_icon {
+    font-size: 1rem;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_back_btn:focus-visible,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_secondary_btn:focus-visible,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_back_btn:hover,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_secondary_btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(234,228,220,0.6);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_secondary_btn[data-state="ready"] {
+    border-color: rgba(234,228,220,0.6);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_secondary_btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_nav_placeholder {
+    display: inline-block;
+    min-width: 120px;
+    height: 48px;
+    visibility: hidden;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.95rem 1.8rem;
+    border-radius: var(--sleepid-btn-radius);
+    border: 1px solid rgba(152,160,166,0.32);
+    background: rgba(255,255,255,0.85);
+    color: var(--sleepid-ink-1);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(234,228,220,0.35), transparent 55%),
+      linear-gradient(120deg, rgba(152,160,166,0.25), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from 0deg, rgba(234,228,220,0.75), rgba(152,160,166,0.45), rgba(234,228,220,0.75));
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0.3;
+    transition: opacity 0.4s ease;
+    animation: sleepidStarBorder 8s linear infinite;
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:hover,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    outline: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:hover::before,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:focus-visible::before {
+    opacity: 1;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:hover::after,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_primary_btn:focus-visible::after {
+    opacity: 0.9;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_science_context {
+    margin: -6px 0 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 68%, #fff 32%);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.6s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_science_context[data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_options {
+    display: grid;
+    gap: 14px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    padding: 1.1rem 1.2rem;
+    text-align: left;
+    border-radius: 12px;
+    border: 1px solid rgba(152,160,166,0.24);
+    background: rgba(255,255,255,0.78);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(234,228,220,0.35), transparent 60%),
+      linear-gradient(120deg, rgba(152,160,166,0.25), transparent 75%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn:hover,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    border-color: rgba(152,160,166,0.4);
+    outline: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn:hover::before,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn:focus-visible::before {
+    opacity: 1;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_btn[data-selected="true"] {
+    border-color: rgba(234,228,220,0.65);
+    background: rgba(234,228,220,0.25);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_label {
+    font-weight: 600;
+    color: var(--sleepid-ink-1);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_option_hint {
+    font-size: 0.92rem;
+    color: var(--sleepid-ink-2);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_feedback_line {
+    font-size: 0.9rem;
+    color: var(--sleepid-ink-2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_feedback_line[data-visible="true"] {
+    opacity: 1;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_gradual_blur {
+    position: absolute;
+    left: 50%;
+    width: min(92vw, 720px);
+    height: 120px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    opacity: 0.6;
+    z-index: 0;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_gradual_blur--top {
+    top: calc(clamp(48px, 8vw, 80px) + 6px);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_gradual_blur--bottom {
+    bottom: calc(clamp(48px, 8vw, 80px) + 6px);
+    transform: translate(-50%, 0) rotate(180deg);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_gradual_blur::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(234,228,220,0.4), transparent 70%);
+    opacity: 0.65;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyzing_wave {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    border-radius: 16px;
+    background: linear-gradient(120deg, rgba(152,160,166,0.16), rgba(234,228,220,0.22));
+    overflow: hidden;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyzing_wave::before,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyzing_wave::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(234,228,220,0.45), transparent 65%);
+    mix-blend-mode: soft-light;
+    animation: sleepidWave 8s ease-in-out infinite;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyzing_wave::after {
+    background: radial-gradient(circle at 80% 50%, rgba(152,160,166,0.35), transparent 70%);
+    animation-duration: 10s;
+    animation-direction: reverse;
+  }
+  @keyframes sleepidWave {
+    0% { transform: translateX(-10%) scale(1); opacity: 0.6; }
+    50% { transform: translateX(10%) scale(1.05); opacity: 0.9; }
+    100% { transform: translateX(-10%) scale(1); opacity: 0.6; }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyze_status {
+    display: grid;
+    gap: 8px;
+    margin: 18px 0 8px;
+    min-height: 3.2em;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyze_phrase {
+    margin: 0;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 82%, #fff 18%);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.7s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_analyze_phrase[data-active="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_loader {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid rgba(152,160,166,0.25);
+    border-top-color: rgba(152,160,166,0.8);
+    margin: 0 auto;
+    animation: sleepidSpin 1.4s linear infinite;
+  }
+  @keyframes sleepidSpin {
+    to { transform: rotate(360deg); }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_experience {
+    display: grid;
+    gap: clamp(32px, 6vw, 44px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    flex: 1 1 auto;
+    padding: clamp(40px, 12vw, 96px);
+    padding-top: calc(clamp(40px, 12vw, 96px) + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(clamp(40px, 12vw, 96px) + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    background:
+      radial-gradient(circle at 20% 18%, rgba(234,228,220,0.58), transparent 72%),
+      radial-gradient(circle at 78% 80%, rgba(152,160,166,0.35), transparent 70%),
+      linear-gradient(140deg, color-mix(in srgb, var(--sleepid-bg-0) 55%, #ffffff 45%), color-mix(in srgb, var(--sleepid-bg-1) 70%, #fefefe 30%));
+    background-size: 200% 200%;
+    animation: sleepidRevealAmbient 28s ease-in-out infinite alternate;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    overflow: hidden;
+    z-index: 40;
+    isolation: isolate;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic:focus-visible {
+    outline: 2px solid rgba(152,160,166,0.45);
+    outline-offset: -12px;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic[data-state="complete"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_cinematic_ambient {
+    position: absolute;
+    inset: -28%;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.22), transparent 72%);
+    mix-blend-mode: screen;
+    animation: sleepidAmbientPulse 18s ease-in-out infinite alternate;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene {
+    position: absolute;
+    inset: 0;
+    padding: clamp(32px, 8vw, 160px) clamp(24px, 10vw, 220px);
+    display: grid;
+    align-content: center;
+    gap: clamp(16px, 3vw, 32px);
+    opacity: 0;
+    transform: scale(1.05) translateY(18px);
+    filter: blur(18px);
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 98%, #ffffff 2%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-active="true"] {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+    pointer-events: auto;
+    z-index: 2;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-leaving="forward"],
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-leaving="back"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-leaving="forward"] {
+    transform: scale(0.97) translateY(-18px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-leaving="back"] {
+    transform: scale(1.04) translateY(22px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_copy {
+    position: relative;
+    display: grid;
+    gap: clamp(12px, 2.5vw, 26px);
+    z-index: 1;
+    max-width: 720px;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_bg {
+    position: absolute;
+    inset: -25%;
+    background:
+      radial-gradient(circle at 32% 30%, rgba(255,255,255,0.42), transparent 68%),
+      linear-gradient(150deg, rgba(152,160,166,0.32), transparent 64%);
+    transform: translate3d(0, 28px, 0) scale(1.12);
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0.7;
+    filter: blur(0.5px);
+    z-index: -1;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-active="true"] .sleepid_scene_bg {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-direction="back"] .sleepid_scene_bg {
+    transform: translate3d(0, 18px, 0) scale(1.08);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-leaving] .sleepid_scene_bg {
+    transform: translate3d(0, -24px, 0) scale(1.05);
+    opacity: 0.45;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-tone="prepare"] .sleepid_scene_bg {
+    background:
+      radial-gradient(circle at 18% 16%, rgba(234,228,220,0.62), transparent 65%),
+      linear-gradient(150deg, rgba(152,160,166,0.28), transparent 68%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-tone="flow"] .sleepid_scene_bg {
+    background:
+      radial-gradient(circle at 72% 26%, rgba(200,210,216,0.45), transparent 60%),
+      linear-gradient(170deg, rgba(234,228,220,0.48), transparent 70%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-tone="focus"] .sleepid_scene_bg {
+    background:
+      radial-gradient(circle at 30% 80%, rgba(234,228,220,0.52), transparent 58%),
+      linear-gradient(140deg, rgba(152,160,166,0.35), transparent 60%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-tone="form"] .sleepid_scene_bg {
+    background:
+      radial-gradient(circle at 50% 20%, rgba(214,206,196,0.55), transparent 62%),
+      linear-gradient(160deg, rgba(158,168,176,0.4), transparent 60%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-tone="reveal"] .sleepid_scene_bg {
+    background:
+      radial-gradient(circle at 65% 70%, rgba(234,228,220,0.6), transparent 60%),
+      linear-gradient(155deg, rgba(188,194,198,0.42), transparent 60%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_label {
+    font-size: 0.9rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 86%, #ffffff 14%);
+    margin: 0;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_title {
+    margin: 0;
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: 600;
+    line-height: 1.22;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 98%, #ffffff 2%);
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(12px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_line {
+    margin: 0;
+    font-size: clamp(1.1rem, 3.4vw, 1.6rem);
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 98%, #ffffff 2%);
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(12px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_reveal {
+    margin: 0;
+    font-size: clamp(2.6rem, 10vw, 4.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    background: linear-gradient(110deg, rgba(234,228,220,0.2), rgba(255,255,255,0.95), rgba(152,160,166,0.25));
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 12px 40px rgba(255,255,255,0.24);
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(14px);
+  }
+  @supports not (color-mix(in srgb, #000 50%, #fff 50%)) {
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_label,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_title,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_line,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_reveal,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_hint {
+      color: var(--sleepid-ink-1);
+    }
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-active="true"] .sleepid_scene_title,
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-active="true"] .sleepid_scene_line {
+    animation: sleepidSceneLine 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--delay, 0.18s);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene[data-active="true"] .sleepid_scene_reveal {
+    animation:
+      sleepidSceneLine 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+      sleepidRevealSheen 5s linear infinite;
+    animation-delay: var(--delay, 0.2s), calc(var(--delay, 0.2s) + 0.6s);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(44px, 6vw, 64px);
+    height: clamp(44px, 6vw, 64px);
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.32);
+    background: rgba(255,255,255,0.18);
+    color: color-mix(in srgb, var(--sleepid-ink-1) 85%, #ffffff 15%);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav span {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 1;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav:hover,
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav:focus-visible {
+    background: rgba(255,255,255,0.28);
+    transform: translateY(-50%) scale(1.05);
+    outline: none;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav[aria-disabled="true"],
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav--prev {
+    left: clamp(24px, 6vw, 80px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav--next {
+    right: clamp(24px, 6vw, 80px);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_nav--next[data-final="true"] span::after {
+    content: 'Reveal';
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_progress {
+    position: absolute;
+    bottom: clamp(72px, 14vh, 120px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    gap: 12px;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.38);
+    transition: transform 0.4s ease, background 0.4s ease;
+    cursor: pointer;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_dot[data-active="true"] {
+    transform: scale(1.3);
+    background: color-mix(in srgb, var(--sleepid-ink-1) 70%, #ffffff 30%);
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_dot:focus-visible {
+    outline: 2px solid rgba(255,255,255,0.7);
+    outline-offset: 2px;
+  }
+  :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene_hint {
+    position: absolute;
+    bottom: clamp(24px, 8vh, 64px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 84%, #ffffff 16%);
+    opacity: 0.78;
+    text-align: center;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_shell {
+    position: relative;
+    display: grid;
+    gap: 24px;
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+    filter: blur(10px);
+    transition:
+      opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_shell[data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    pointer-events: auto;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_grid {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (min-width: 720px) {
+    #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_summary_body {
+    display: grid;
+    gap: 18px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_card {
+    display: grid;
+    gap: 16px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_science {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(152,160,166,0.18);
+    display: grid;
+    gap: 10px;
+    color: color-mix(in srgb, var(--sleepid-ink-1) 82%, #fff 18%);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_science h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_science p {
+    margin: 0;
+    font-size: 0.96rem;
+    line-height: 1.6;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    background: rgba(234,228,220,0.48);
+    color: var(--sleepid-ink-1);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_visual {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.65), rgba(234,228,220,0.2));
+    border: 1px solid rgba(152,160,166,0.22);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+    overflow: hidden;
+    justify-self: end;
+    align-self: start;
+    width: clamp(160px, 25vw, 300px);
+    max-width: 300px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 16px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.68), transparent 72%), rgba(255,255,255,0.4);
+    box-shadow: 0 18px 36px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.8);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::before,
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::after {
+    content: '';
+    position: absolute;
+    inset: -38%;
+    background: radial-gradient(circle, rgba(255,255,255,0.32), transparent 65%);
+    opacity: 0.32;
+    transform: scale(0.94);
+    filter: blur(20px);
+    transition: transform 6s ease-in-out, opacity 6s ease-in-out;
+    pointer-events: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::before {
+    animation: sleepidProductPulse 28s ease-in-out infinite alternate;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_result_product::after {
+    inset: -18%;
+    background: linear-gradient(120deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 62%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: translateX(-120%) scale(0.98);
+    animation: sleepidProductShine 36s ease-in-out infinite;
+  }
+  @keyframes sleepidRevealAmbient {
+    0% { background-position: 20% 30%; }
+    100% { background-position: 80% 70%; }
+  }
+  @keyframes sleepidAmbientPulse {
+    0% { opacity: 0.35; transform: scale(1); }
+    100% { opacity: 0.7; transform: scale(1.12); }
+  }
+  @keyframes sleepidSceneLine {
+    0% { opacity: 0; transform: translateY(12px); filter: blur(12px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes sleepidRevealSheen {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  @keyframes sleepidProductShine {
+    0% { opacity: 0; transform: translateX(-120%) scale(0.98); }
+    40% { opacity: 0.28; }
+    55% { opacity: 0.42; }
+    70% { opacity: 0.18; }
+    100% { opacity: 0; transform: translateX(120%) scale(1.02); }
+  }
+  @keyframes sleepidProductPulse {
+    0% { opacity: 0.22; transform: scale(0.94); }
+    100% { opacity: 0.45; transform: scale(1.02); }
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form {
+    display: grid;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_row {
+    display: grid;
+    gap: 6px;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_row label {
+    font-size: 0.95rem;
+    color: var(--sleepid-ink-2);
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_row input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(152,160,166,0.3);
+    background: rgba(255,255,255,0.9);
+    color: var(--sleepid-ink-1);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_row input:focus {
+    border-color: rgba(234,228,220,0.7);
+    box-shadow: 0 0 0 3px rgba(234,228,220,0.35);
+    outline: none;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_message {
+    min-height: 1.2em;
+    font-size: 0.95rem;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_message[data-state="error"] {
+    color: #c24949;
+  }
+  #sleepid-quiz-section-{{ section.id }} .sleepid_form_message[data-state="success"] {
+    color: #3f7b5a;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_progress_value,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_progress_pulse,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_logo,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_logo_shimmer,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_option_btn,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_primary_btn,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_stage_panel,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_analyzing_wave::before,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_analyzing_wave::after,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_summary_shell,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_product::before,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_product::after {
+      animation-duration: 0.001s !important;
+      animation-iteration-count: 1 !important;
+    }
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_primary_btn,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_option_btn,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_scene,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_cinematic,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_summary_shell,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_visual,
+    :is(#sleepid-quiz-section-{{ section.id }}, .sleepid_result_cinematic_overlay) .sleepid_result_product {
+      transition-duration: 0.001s !important;
+    }
+  }
+</style>
+<script>
+  (function() {
+    const rootId = 'sleepid-quiz-section-{{ section.id }}';
+    const rootEl = document.getElementById(rootId);
+    if (!rootEl) return;
+
+    const dataScript = document.getElementById('sleepid-quiz-data-{{ section.id }}');
+    let config = { klaviyoList: '', colors: {} };
+    try {
+      config = JSON.parse(dataScript.textContent);
+    } catch (error) {}
+
+    if (config.colors) {
+      if (config.colors.bg0) rootEl.style.setProperty('--sleepid-bg-0', config.colors.bg0);
+      if (config.colors.bg1) rootEl.style.setProperty('--sleepid-bg-1', config.colors.bg1);
+      if (config.colors.ink1) rootEl.style.setProperty('--sleepid-ink-1', config.colors.ink1);
+      if (config.colors.ink2) rootEl.style.setProperty('--sleepid-ink-2', config.colors.ink2);
+    }
+
+    function escapeHtml(value) {
+      return value == null
+        ? ''
+        : value
+            .toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    const credibilityText = (config.credibilityText || 'Based on chronobiology research (Harvard • Munich • Stanford)').trim();
+    const analyzeLabel = (config.analyzeLabel || 'Analyze my results').trim() || 'Analyze my results';
+    const analyzeDurationSeconds = Number(config.analyzeDuration);
+    const analyzeDuration = !Number.isNaN(analyzeDurationSeconds) ? analyzeDurationSeconds : 5;
+    const analyzeDurationMs = Math.max(4, Math.min(8, analyzeDuration)) * 1000;
+    const scienceContextMap = config.scienceContexts || {};
+    const scienceExplanationMap = {
+      night: 'Owls show delayed melatonin onset and evening-oriented cortisol cycles — your alertness peaks later.',
+      day: 'Dayflow Navigators typically show early cortisol peaks and balanced serotonin cycles — your focus follows daylight patterns.',
+      twilight: 'Twilight types exhibit flexible circadian modulation and variable REM timing.',
+      hybrid: 'Hybrids maintain adaptive melatonin profiles, thriving in mixed schedule environments.'
+    };
+    const scienceKeyMap = { A: 'day', B: 'hybrid', C: 'twilight', D: 'night', E: 'night' };
+
+    const stage = rootEl.querySelector('[data-sleepid-stage]');
+    const progressFill = rootEl.querySelector('[data-sleepid-progress-fill]');
+    const progressValue = rootEl.querySelector('[data-sleepid-progress-value]');
+    const progressPath = rootEl.querySelector('[data-sleepid-progress-path]');
+    const progressRing = rootEl.querySelector('[data-sleepid-progress-ring]');
+    const startBtn = rootEl.querySelector('[data-sleepid-start]');
+    const surface = rootEl.querySelector('[data-sleepid-surface]');
+    const chimeEl = rootEl.querySelector('[data-sleepid-chime]');
+     let fullscreenPlaceholder = null;
+    let fullscreenBodyOverflow = '';
+    const productImages = {
+      A: '{{ section.settings.result_image_aurora | image_url }}',
+      B: '{{ section.settings.result_image_day | image_url }}',
+      C: '{{ section.settings.result_image_lumen | image_url }}',
+      D: '{{ section.settings.result_image_eclipse | image_url }}',
+      E: '{{ section.settings.result_image_night | image_url }}'
+    };
+
+    const circumference = 2 * Math.PI * 52;
+    progressPath.setAttribute('stroke-dasharray', circumference);
+
+    const analyzePhrases = [
+      'Analyzing your rhythm…',
+      'Mapping chronotype markers…',
+      'Calibrating circadian signature…'
+    ];
+
+    const questions = [
+      {
+        id: 'alertness_window',
+        title: 'When does your focus feel effortless?',
+        context: 'Morning alertness is often linked to early cortisol peaks.',
+        options: [
+          { label: 'Dawn light hours', hint: 'That’s common for Sunrise Types.', weight: 2 },
+          { label: 'Midday pulse', hint: 'Often seen in balanced Circa Types.', weight: 3 },
+          { label: 'Late evening surge', hint: 'Night Types thrive after sunset.', weight: 4 }
+        ]
+      },
+      {
+        id: 'wake_energy',
+        title: 'How do you usually feel 30 minutes after waking?',
+        context: 'Post-wake clarity reflects how rapidly your cortisol curve ascends.',
+        options: [
+          { label: 'Ready and clear', hint: 'Signals a primed cortisol rise.', weight: 1 },
+          { label: 'Warming up slowly', hint: 'Many mid chronotypes feel this.', weight: 2 },
+          { label: 'Still foggy', hint: 'Night Types take longer to spark.', weight: 3 }
+        ]
+      },
+      {
+        id: 'evening_signal',
+        title: 'When do you sense the first yawn?',
+        context: 'Melatonin release timing shapes when your first yawns arrive.',
+        options: [
+          { label: 'Before 9 pm', hint: 'Your melatonin cues arrive early.', weight: 1 },
+          { label: 'Around 10–11 pm', hint: 'A gentle, balanced rhythm.', weight: 2 },
+          { label: 'Close to midnight', hint: 'Your clock loves the late hours.', weight: 3 }
+        ]
+      },
+      {
+        id: 'weekend_pattern',
+        title: 'How does your weekend sleep shift?',
+        context: 'Shifts on free days reveal the size of your social jetlag window.',
+        options: [
+          { label: 'Same schedule, no change', hint: 'Consistent routines aid recovery.', weight: 1 },
+          { label: 'I drift by 1 hour', hint: 'A mild social jetlag pattern.', weight: 2 },
+          { label: 'Two hours or more later', hint: 'Night Types reclaim their rhythm.', weight: 4 }
+        ]
+      },
+      {
+        id: 'midday_slump',
+        title: 'Describe your midday energy dip.',
+        context: 'Ultradian dips and glucose rhythms drive midday energy troughs.',
+        options: [
+          { label: 'Almost none', hint: 'Likely an early chronobiology.', weight: 1 },
+          { label: 'Noticeable but manageable', hint: 'Balanced types feel this sway.', weight: 2 },
+          { label: 'Very strong, I perk up later', hint: 'Your energy blooms at dusk.', weight: 3 }
+        ]
+      },
+      {
+        id: 'evening_activity',
+        title: 'Evening productivity feels…',
+        context: 'Late-evening productivity can mirror delayed circadian temperature rise.',
+        options: [
+          { label: 'Low — I prefer winding down', hint: 'Protects early rest cycles.', weight: 1 },
+          { label: 'Steady — I can focus if needed', hint: 'A flexible internal clock.', weight: 2 },
+          { label: 'High — my ideas arrive now', hint: 'Night creatives glow here.', weight: 3 }
+        ]
+      },
+      {
+        id: 'sleep_latency',
+        title: 'When you go to bed on time, you fall asleep…',
+        context: 'Sleep latency shows how aligned your melatonin onset is with bedtime.',
+        options: [
+          { label: 'Within 10 minutes', hint: 'Shows your rhythm and bedtime align.', weight: 1 },
+          { label: 'In about 20 minutes', hint: 'A gentle glide into sleep.', weight: 2 },
+          { label: 'It takes a long while', hint: 'Your clock may prefer later hours.', weight: 3 }
+        ]
+      }
+    ];
+
+    questions.forEach(function(question) {
+      const mapped = scienceContextMap[question.id];
+      const trimmed = typeof mapped === 'string' ? mapped.trim() : '';
+      question.scienceContext = trimmed || question.context || '';
+      if (Object.prototype.hasOwnProperty.call(question, 'context')) {
+        delete question.context;
+      }
+    });
+
+    const resultMap = [
+      { max: 9, id: 'A', label: 'Aurora Sync', summary: 'Your energy brightens with first light. A structured dawn ritual keeps your Sleepsona harmonised.' },
+      { max: 13, id: 'B', label: 'Dayflow Navigator', summary: 'You balance morning clarity with evening reflection. Gentle anchors keep you centred.' },
+      { max: 17, id: 'C', label: 'Lumen Seeker', summary: 'Your rhythm arcs toward late afternoons. Harness your peak by clustering focus later in the day.' },
+      { max: 20, id: 'D', label: 'Eclipse Pioneer', summary: 'Nightfall awakens your insight. Protect late creativity with restorative buffers.' },
+      { max: Infinity, id: 'E', label: 'Nebula Nocturne', summary: 'You thrive when the world softens. Embrace moonlit productivity with mindful recovery cues.' }
+    ];
+
+    const totalSteps = questions.length + 2;
+    let currentIndex = -1;
+    const answers = new Array(questions.length).fill(null);
+    let resultType = null;
+    let analyzingTimeout = null;
+    let analyzingInterval = null;
+    let cinematicTimers = [];
+    let cinematicCleanup = [];
+
+    function updateProgress(step) {
+      const percent = Math.round((step / totalSteps) * 100);
+      progressFill.style.width = percent + '%';
+      progressValue.textContent = percent + '%';
+      const offset = circumference - (percent / 100) * circumference;
+      progressPath.style.strokeDashoffset = offset;
+      progressRing.setAttribute('data-progress', String(percent));
+    }
+
+    function playChime() {
+      if (!chimeEl) return;
+      try {
+        chimeEl.currentTime = 0;
+        const playPromise = chimeEl.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(function() {});
+        }
+      } catch (err) {}
+    }
+
+     function enterFullscreenExperience() {
+      if (!rootEl || rootEl.getAttribute('data-fullscreen') === 'true') {
+        return;
+      }
+      if (fullscreenPlaceholder && fullscreenPlaceholder.parentNode) {
+        fullscreenPlaceholder.parentNode.removeChild(fullscreenPlaceholder);
+      }
+      const rect = rootEl.getBoundingClientRect();
+      const placeholder = document.createElement('div');
+      placeholder.setAttribute('data-sleepid-fullscreen-placeholder', 'true');
+      const computedStyle = window.getComputedStyle(rootEl);
+      placeholder.style.display = 'block';
+      placeholder.style.width = computedStyle.width;
+      if (computedStyle.maxWidth && computedStyle.maxWidth !== 'none') {
+        placeholder.style.maxWidth = computedStyle.maxWidth;
+      }
+      if (computedStyle.minWidth && computedStyle.minWidth !== 'auto') {
+        placeholder.style.minWidth = computedStyle.minWidth;
+      }
+      placeholder.style.height = rect.height + 'px';
+      placeholder.style.margin = computedStyle.margin;
+      placeholder.style.pointerEvents = 'none';
+      placeholder.style.visibility = 'hidden';
+      placeholder.setAttribute('aria-hidden', 'true');
+      if (rootEl.parentNode) {
+        rootEl.parentNode.insertBefore(placeholder, rootEl);
+      }
+      fullscreenPlaceholder = placeholder;
+      fullscreenBodyOverflow = document.body.style.overflow || '';
+      document.body.setAttribute('data-sleepid-quiz-open', rootId);
+      document.body.style.overflow = 'hidden';
+      const offsetY = rect.top;
+      rootEl.style.setProperty('--sleepid-fullscreen-enter-y', offsetY + 'px');
+      rootEl.removeAttribute('data-fullscreen-state');
+      rootEl.setAttribute('data-fullscreen', 'true');
+      window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(function() {
+          rootEl.setAttribute('data-fullscreen-state', 'settled');
+          rootEl.scrollTop = 0;
+        });
+      });
+    }
+
+    function exitFullscreenExperience() {
+      if (!rootEl || rootEl.getAttribute('data-fullscreen') !== 'true') {
+        return;
+      }
+      rootEl.removeAttribute('data-fullscreen-state');
+      rootEl.removeAttribute('data-fullscreen');
+      rootEl.style.removeProperty('--sleepid-fullscreen-enter-y');
+      if (fullscreenPlaceholder && fullscreenPlaceholder.parentNode) {
+        fullscreenPlaceholder.parentNode.removeChild(fullscreenPlaceholder);
+      }
+      fullscreenPlaceholder = null;
+      if (document.body.getAttribute('data-sleepid-quiz-open') === rootId) {
+        if (!document.body.hasAttribute('data-sleepid-cinematic-open')) {
+          document.body.style.overflow = fullscreenBodyOverflow;
+        }
+        document.body.removeAttribute('data-sleepid-quiz-open');
+      }
+      fullscreenBodyOverflow = '';
+    }
+
+    function clearAnalyzingTimers() {
+      if (analyzingTimeout) {
+        window.clearTimeout(analyzingTimeout);
+        analyzingTimeout = null;
+      }
+      if (analyzingInterval) {
+        window.clearInterval(analyzingInterval);
+        analyzingInterval = null;
+      }
+    }
+
+    function clearCinematicTimers() {
+      cinematicTimers.forEach(function(timerId) {
+        window.clearTimeout(timerId);
+      });
+      cinematicTimers = [];
+      cinematicCleanup.forEach(function(remove) {
+        try {
+          remove();
+        } catch (error) {}
+      });
+      cinematicCleanup = [];
+      const overlaySelector = '[data-sleepid-cinematic-overlay][data-section="' + rootId + '"]';
+      const lingeringOverlays = document.querySelectorAll(overlaySelector);
+      lingeringOverlays.forEach(function(node) {
+        if (node.dataset.state === 'closing') {
+          return;
+        }
+        if (node.dataset.bodyLock === 'true') {
+          const prev = node.dataset.prevOverflow || '';
+          document.body.style.overflow = prev;
+          document.body.removeAttribute('data-sleepid-cinematic-open');
+        }
+        node.remove();
+      });
+      if (!document.querySelector(overlaySelector) && document.body.hasAttribute('data-sleepid-cinematic-open')) {
+        document.body.style.overflow = '';
+        document.body.removeAttribute('data-sleepid-cinematic-open');
+      }
+    }
+
+    function getTotalScore() {
+      return answers.reduce(function(sum, entry) {
+        if (!entry) return sum;
+        return sum + (Number(entry.weight) || 0);
+      }, 0);
+    }
+
+    function revealSummary(summaryShell, cinematicEl) {
+      if (!summaryShell) return;
+      let overlayHost = null;
+      let placeholder = null;
+      if (cinematicEl) {
+        cinematicEl.setAttribute('data-state', 'complete');
+        delete cinematicEl.dataset.motion;
+        overlayHost = cinematicEl._sleepidOverlayHost || cinematicEl.closest('[data-sleepid-cinematic-overlay]');
+        placeholder = cinematicEl._sleepidPlaceholder || null;
+      }
+      if (overlayHost) {
+        overlayHost.dataset.state = 'closing';
+        const handleOverlayRemove = function() {
+          overlayHost.removeEventListener('transitionend', handleOverlayRemove);
+          if (overlayHost.parentNode) {
+            overlayHost.parentNode.removeChild(overlayHost);
+          }
+        };
+        overlayHost.addEventListener('transitionend', handleOverlayRemove);
+        window.setTimeout(handleOverlayRemove, 900);
+      }
+      if (placeholder && placeholder.parentNode) {
+        placeholder.parentNode.removeChild(placeholder);
+      }
+      if (cinematicEl) {
+        delete cinematicEl._sleepidOverlayHost;
+        delete cinematicEl._sleepidPlaceholder;
+      }
+      summaryShell.dataset.visible = 'true';
+      summaryShell.removeAttribute('aria-hidden');
+      const focusTarget = summaryShell.querySelector('.sleepid_heading');
+      if (focusTarget) {
+        focusTarget.setAttribute('tabindex', '-1');
+        window.requestAnimationFrame(function() {
+          focusTarget.focus({ preventScroll: true });
+        });
+        focusTarget.addEventListener('blur', function handler() {
+          focusTarget.removeAttribute('tabindex');
+          focusTarget.removeEventListener('blur', handler);
+        });
+      }
+    }
+
+    function runCinematicSequence(panel) {
+      const cinematicEl = panel.querySelector('[data-sleepid-cinematic]');
+      const summaryShell = panel.querySelector('[data-sleepid-summary]');
+      if (!cinematicEl) {
+        revealSummary(summaryShell);
+        return;
+      }
+      clearCinematicTimers();
+      const placeholder = document.createElement('div');
+      placeholder.setAttribute('data-sleepid-cinematic-placeholder', 'true');
+      const parentNode = cinematicEl.parentNode;
+      if (parentNode) {
+        parentNode.insertBefore(placeholder, cinematicEl);
+      }
+      const overlayHost = document.createElement('div');
+      overlayHost.className = 'sleepid_result_cinematic_overlay';
+      overlayHost.dataset.section = rootId;
+      overlayHost.setAttribute('data-sleepid-cinematic-overlay', 'true');
+      const computedVars = window.getComputedStyle(rootEl);
+      [
+        '--sleepid-bg-0',
+        '--sleepid-bg-1',
+        '--sleepid-ink-1',
+        '--sleepid-ink-2',
+        '--sleepid-accent',
+        '--sleepid-muted',
+        '--sleepid-thread-color',
+        '--sleepid-thread-glow'
+      ].forEach(function(varName) {
+        const value = computedVars.getPropertyValue(varName);
+        if (value) {
+          overlayHost.style.setProperty(varName, value.trim());
+        }
+      });
+      overlayHost.style.fontFamily = computedVars.fontFamily;
+      const previousOverflow = document.body.style.overflow || '';
+      if (!document.body.hasAttribute('data-sleepid-cinematic-open')) {
+        overlayHost.dataset.bodyLock = 'true';
+        overlayHost.dataset.prevOverflow = previousOverflow;
+        document.body.setAttribute('data-sleepid-cinematic-open', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      overlayHost.appendChild(cinematicEl);
+      document.body.appendChild(overlayHost);
+      cinematicEl._sleepidOverlayHost = overlayHost;
+      cinematicEl._sleepidPlaceholder = placeholder;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let overlayOpened = false;
+      function setOverlayOpen() {
+        if (overlayOpened) return;
+        overlayOpened = true;
+        overlayHost.dataset.state = 'open';
+        if (prefersReducedMotion) {
+          cinematicEl.dataset.motion = 'reduced';
+        } else {
+          delete cinematicEl.dataset.motion;
+        }
+        playChime();
+      }
+      requestAnimationFrame(setOverlayOpen);
+      window.setTimeout(setOverlayOpen, 120);
+      if (prefersReducedMotion) {
+        setOverlayOpen();
+      }
+      cinematicCleanup.push(function() {
+        const isClosing = overlayHost.dataset.state === 'closing';
+        if (!isClosing) {
+          if (overlayHost.parentNode) {
+            overlayHost.parentNode.removeChild(overlayHost);
+          }
+          if (placeholder.parentNode) {
+            placeholder.parentNode.replaceChild(cinematicEl, placeholder);
+          }
+        }
+        if (overlayHost.dataset.bodyLock === 'true') {
+          const prev = overlayHost.dataset.prevOverflow || '';
+          document.body.style.overflow = prev;
+          document.body.removeAttribute('data-sleepid-cinematic-open');
+        }
+      });
+      const scenes = Array.from(cinematicEl.querySelectorAll('[data-sleepid-scene]'));
+      if (!scenes.length) {
+        revealSummary(summaryShell, cinematicEl);
+        clearCinematicTimers();
+        return;
+      }
+      scenes.forEach(function(scene, index) {
+        scene.dataset.active = index === 0 ? 'true' : 'false';
+        if (index === 0) {
+          scene.removeAttribute('aria-hidden');
+        } else {
+          scene.setAttribute('aria-hidden', 'true');
+        }
+        scene.removeAttribute('data-leaving');
+        scene.removeAttribute('data-direction');
+      });
+      const progressDots = Array.from(cinematicEl.querySelectorAll('[data-scene-progress]'));
+      const prevBtn = cinematicEl.querySelector('[data-scene-prev]');
+      const nextBtn = cinematicEl.querySelector('[data-scene-next]');
+      let currentScene = 0;
+      let touchStartX = null;
+      let touchStartY = null;
+      cinematicEl.dataset.sceneIndex = String(currentScene);
+
+      function updateProgressUI() {
+        if (prevBtn) {
+          const isDisabled = currentScene === 0;
+          prevBtn.disabled = isDisabled;
+          prevBtn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
+        }
+        if (nextBtn) {
+          const isFinal = currentScene === scenes.length - 1;
+          nextBtn.dataset.final = isFinal ? 'true' : 'false';
+          nextBtn.setAttribute('aria-label', isFinal ? 'Reveal summary' : 'Next reveal');
+        }
+        progressDots.forEach(function(dot, index) {
+          const isActive = index === currentScene;
+          dot.dataset.active = isActive ? 'true' : 'false';
+          dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+      }
+
+      function activateScene(nextIndex, direction) {
+        if (nextIndex === currentScene || nextIndex < 0) {
+          return;
+        }
+        if (nextIndex >= scenes.length) {
+          cinematicEl.setAttribute('data-state', 'complete');
+          revealSummary(summaryShell, cinematicEl);
+          clearCinematicTimers();
+          return;
+        }
+        const previous = scenes[currentScene];
+        previous.dataset.active = 'false';
+        previous.dataset.leaving = direction > 0 ? 'forward' : 'back';
+        previous.setAttribute('aria-hidden', 'true');
+        const clearPrevious = window.setTimeout(function() {
+          previous.removeAttribute('data-leaving');
+        }, 700);
+        cinematicTimers.push(clearPrevious);
+
+        const next = scenes[nextIndex];
+        next.dataset.active = 'true';
+        next.dataset.direction = direction > 0 ? 'forward' : 'back';
+        next.removeAttribute('aria-hidden');
+        const clearNext = window.setTimeout(function() {
+          next.removeAttribute('data-direction');
+        }, 700);
+        cinematicTimers.push(clearNext);
+
+        currentScene = nextIndex;
+        cinematicEl.dataset.sceneIndex = String(currentScene);
+        updateProgressUI();
+      }
+
+      function goForward() {
+        activateScene(currentScene + 1, 1);
+      }
+
+      function goBackward() {
+        activateScene(currentScene - 1, -1);
+      }
+
+      if (prevBtn) {
+        const handlePrev = function() {
+          goBackward();
+        };
+        prevBtn.addEventListener('click', handlePrev);
+        cinematicCleanup.push(function() {
+          prevBtn.removeEventListener('click', handlePrev);
+        });
+      }
+
+      if (nextBtn) {
+        const handleNext = function() {
+          goForward();
+        };
+        nextBtn.addEventListener('click', handleNext);
+        cinematicCleanup.push(function() {
+          nextBtn.removeEventListener('click', handleNext);
+        });
+      }
+
+      progressDots.forEach(function(dot, index) {
+        const handleDot = function() {
+          const direction = index > currentScene ? 1 : -1;
+          activateScene(index, direction);
+        };
+        dot.addEventListener('click', handleDot);
+        cinematicCleanup.push(function() {
+          dot.removeEventListener('click', handleDot);
+        });
+      });
+
+      const sceneClickHandler = function(event) {
+        const target = event.target;
+        if (!target) {
+          return;
+        }
+        if (target.closest('button') || target.closest('[data-scene-progress]')) {
+          return;
+        }
+        goForward();
+      };
+      cinematicEl.addEventListener('click', sceneClickHandler);
+      cinematicCleanup.push(function() {
+        cinematicEl.removeEventListener('click', sceneClickHandler);
+      });
+
+      const keyHandler = function(event) {
+        if (event.key === 'ArrowRight' || event.key === ' ') {
+          event.preventDefault();
+          goForward();
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goBackward();
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          goForward();
+        }
+      };
+      cinematicEl.addEventListener('keydown', keyHandler);
+      cinematicCleanup.push(function() {
+        cinematicEl.removeEventListener('keydown', keyHandler);
+      });
+
+      const touchStartHandler = function(event) {
+        if (!event.touches || event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      };
+      const touchMoveHandler = function(event) {
+        if (touchStartX === null || touchStartY === null) return;
+        if (!event.touches || !event.touches.length) return;
+        const touch = event.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+          event.preventDefault();
+        }
+      };
+      const touchEndHandler = function(event) {
+        if (touchStartX === null || touchStartY === null) return;
+        const touch = event.changedTouches && event.changedTouches[0];
+        if (!touch) return;
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 45) {
+          if (deltaX < 0) {
+            goForward();
+          } else {
+            goBackward();
+          }
+        }
+        touchStartX = null;
+        touchStartY = null;
+      };
+      cinematicEl.addEventListener('touchstart', touchStartHandler, { passive: true });
+      cinematicEl.addEventListener('touchmove', touchMoveHandler, { passive: false });
+      cinematicEl.addEventListener('touchend', touchEndHandler);
+      cinematicCleanup.push(function() {
+        cinematicEl.removeEventListener('touchstart', touchStartHandler);
+        cinematicEl.removeEventListener('touchmove', touchMoveHandler);
+        cinematicEl.removeEventListener('touchend', touchEndHandler);
+      });
+
+      cinematicEl.focus({ preventScroll: true });
+      updateProgressUI();
+    }
+
+    function showPanel(panel) {
+      stage.innerHTML = '';
+      stage.appendChild(panel);
+      const focusable = Array.from(panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).find(function(el) {
+        return !el.hasAttribute('disabled');
+      });
+      if (focusable) {
+        window.requestAnimationFrame(function() {
+          focusable.focus();
+        });
+      }
+    }
+
+    function renderQuestion(index) {
+      const question = questions[index];
+      const panel = document.createElement('div');
+      panel.className = 'sleepid_stage_panel sleepid_fade_content';
+      panel.dataset.stage = 'question';
+      panel.setAttribute('role', 'group');
+      panel.setAttribute('aria-labelledby', 'sleepid-question-title-' + question.id + '-{{ section.id }}');
+      const isLastQuestion = index === questions.length - 1;
+      const continueLabel = isLastQuestion ? analyzeLabel : 'Continue';
+      const contextMarkup = question.scienceContext
+        ? '<p class="sleepid_science_context" data-visible="false">' + escapeHtml(question.scienceContext) + '</p>'
+        : '';
+      panel.innerHTML = `
+        <div class="sleepid_question_nav" ${index === 0 ? 'data-has-back="false"' : ''}>
+          ${index > 0 ? `<button type="button" class="sleepid_back_btn" data-sleepid-back aria-label="Go back to previous question"><span class="sleepid_back_icon" aria-hidden="true">&#8592;</span><span class="sleepid_back_label">Back</span></button>` : '<span class="sleepid_nav_placeholder" aria-hidden="true"></span>'}
+          <button type="button" class="sleepid_secondary_btn" data-sleepid-continue disabled>${continueLabel}</button>
+        </div>
+        <h3 class="sleepid_heading" id="sleepid-question-title-${question.id}-{{ section.id }}">${question.title}</h3>
+        ${contextMarkup}
+        <div class="sleepid_options" role="radiogroup" aria-label="${question.title}">
+          ${question.options.map(function(option, optionIndex) {
+            return `
+              <button type="button" class="sleepid_option_btn" data-option-index="${optionIndex}" role="radio" aria-checked="false" data-value="${option.weight}" data-hint="${option.hint.replace(/"/g, '&quot;')}">
+                <span class="sleepid_option_label">${option.label}</span>
+                <span class="sleepid_option_hint">${option.hint}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+        <p class="sleepid_feedback_line" data-visible="false">&nbsp;</p>
+      `;
+      const optionsContainer = panel.querySelector('.sleepid_options');
+      const optionButtons = Array.from(panel.querySelectorAll('.sleepid_option_btn'));
+      const backBtn = panel.querySelector('[data-sleepid-back]');
+      const continueBtn = panel.querySelector('[data-sleepid-continue]');
+      if (backBtn) {
+        backBtn.addEventListener('click', function() {
+          goToQuestion(index - 1);
+        });
+      }
+      if (continueBtn) {
+        continueBtn.addEventListener('click', function() {
+          goToQuestion(index + 1);
+        });
+      }
+      optionButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          handleSelect(btn, index);
+        });
+        btn.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleSelect(btn, index);
+          } else if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+            event.preventDefault();
+            const nextIndex = (optionButtons.indexOf(btn) + 1) % optionButtons.length;
+            optionButtons[nextIndex].focus();
+          } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            const prevIndex = (optionButtons.indexOf(btn) - 1 + optionButtons.length) % optionButtons.length;
+            optionButtons[prevIndex].focus();
+          }
+        });
+      });
+      optionsContainer.setAttribute('tabindex', '-1');
+      const saved = answers[index];
+      if (saved && typeof saved.optionIndex === 'number' && optionButtons[saved.optionIndex]) {
+        const savedButton = optionButtons[saved.optionIndex];
+        savedButton.dataset.selected = 'true';
+        savedButton.setAttribute('aria-checked', 'true');
+        const feedback = panel.querySelector('.sleepid_feedback_line');
+        feedback.textContent = 'Noted: ' + (saved.hint || '');
+        feedback.dataset.visible = 'true';
+        if (continueBtn) {
+          continueBtn.disabled = false;
+          continueBtn.dataset.state = 'ready';
+        }
+      }
+      showPanel(panel);
+      const contextEl = panel.querySelector('.sleepid_science_context');
+      if (contextEl) {
+        window.setTimeout(function() {
+          contextEl.dataset.visible = 'true';
+        }, 420);
+      }
+      optionsContainer.focus({ preventScroll: true });
+    }
+
+    function handleSelect(button, questionIndex) {
+      const panel = button.closest('.sleepid_stage_panel');
+      const buttons = panel.querySelectorAll('.sleepid_option_btn');
+      buttons.forEach(function(btn) {
+        btn.dataset.selected = 'false';
+        btn.setAttribute('aria-checked', 'false');
+      });
+      button.dataset.selected = 'true';
+      button.setAttribute('aria-checked', 'true');
+      const value = Number(button.dataset.value) || 0;
+      const hint = button.dataset.hint || '';
+      const optionIndex = Number(button.dataset.optionIndex) || 0;
+      const feedback = panel.querySelector('.sleepid_feedback_line');
+      feedback.textContent = 'Noted: ' + hint;
+      feedback.dataset.visible = 'true';
+      const continueBtn = panel.querySelector('[data-sleepid-continue]');
+      if (continueBtn) {
+        continueBtn.disabled = false;
+        continueBtn.dataset.state = 'ready';
+      }
+      answers[questionIndex] = {
+        weight: value,
+        hint: hint,
+        optionIndex: optionIndex
+      };
+      const isLastQuestion = questionIndex === questions.length - 1;
+      if (!isLastQuestion) {
+        setTimeout(function() {
+          goToQuestion(questionIndex + 1);
+        }, 360);
+      } else if (continueBtn) {
+        window.requestAnimationFrame(function() {
+          continueBtn.focus({ preventScroll: true });
+        });
+      }
+    }
+
+    function goToQuestion(index) {
+      currentIndex = index;
+      if (index >= 0 && index < questions.length) {
+        updateProgress(index + 1);
+        renderQuestion(index);
+      } else if (index >= questions.length) {
+        showAnalyzing();
+      }
+    }
+
+    function showAnalyzing() {
+      currentIndex = questions.length;
+      updateProgress(questions.length + 1);
+      clearAnalyzingTimers();
+      const panel = document.createElement('div');
+      panel.className = 'sleepid_stage_panel sleepid_fade_content';
+      panel.dataset.stage = 'analyzing';
+      const phrasesHtml = analyzePhrases
+        .map(function(phrase, idx) {
+          const activeAttr = idx === 0 ? ' data-active="true"' : '';
+          return '<p class="sleepid_analyze_phrase" data-index="' + idx + '"' + activeAttr + '>' + escapeHtml(phrase) + '</p>';
+        })
+        .join('');
+      panel.innerHTML = `
+        <h3 class="sleepid_heading" id="sleepid-quiz-heading-{{ section.id }}">Analyzing your rhythm…</h3>
+        <p class="sleepid_body_text">We’re aligning your answers with chronotype markers. Take a breath while we tune the waves.</p>
+        <div class="sleepid_analyze_status" data-sleepid-analyze>${phrasesHtml}</div>
+        <div class="sleepid_analyzing_wave" aria-hidden="true"></div>
+        <div class="sleepid_loader" role="status" aria-label="Analyzing"></div>
+      `;
+      showPanel(panel);
+      const phraseEls = Array.from(panel.querySelectorAll('.sleepid_analyze_phrase'));
+      let phraseIndex = 0;
+      if (phraseEls.length > 1) {
+        analyzingInterval = window.setInterval(function() {
+          phraseEls[phraseIndex].dataset.active = 'false';
+          phraseIndex = (phraseIndex + 1) % phraseEls.length;
+          phraseEls[phraseIndex].dataset.active = 'true';
+        }, 2000);
+      }
+      analyzingTimeout = window.setTimeout(function() {
+        clearAnalyzingTimers();
+        const result = calculateResult();
+        resultType = result.id;
+        showResult(result);
+      }, analyzeDurationMs);
+    }
+
+    function calculateResult() {
+      const totalScore = getTotalScore();
+      for (let i = 0; i < resultMap.length; i += 1) {
+        if (totalScore <= resultMap[i].max) {
+          return resultMap[i];
+        }
+      }
+      return resultMap[resultMap.length - 1];
+    }
+
+    function showResult(result) {
+      currentIndex = questions.length + 1;
+      updateProgress(totalSteps);
+      clearAnalyzingTimers();
+      const panel = document.createElement('div');
+      panel.className = 'sleepid_stage_panel sleepid_fade_content';
+      panel.dataset.stage = 'result';
+      clearCinematicTimers();
+      const productImageUrl = (productImages[result.id] || '').trim();
+      panel.innerHTML = `
+        <div class="sleepid_result_experience">
+          <div class="sleepid_result_cinematic" data-sleepid-cinematic tabindex="-1" role="group" aria-label="SleepID reveal journey">
+            <div class="sleepid_cinematic_ambient" aria-hidden="true"></div>
+            <div class="sleepid_scene" data-sleepid-scene data-index="0" data-tone="prepare" data-active="true" aria-hidden="false">
+              <div class="sleepid_scene_bg" aria-hidden="true"></div>
+              <div class="sleepid_scene_copy">
+                <p class="sleepid_scene_label">Prelude</p>
+                <h3 class="sleepid_scene_title" style="--delay:0.08s;">Are you ready to discover your SleepType?</h3>
+                <p class="sleepid_scene_line" style="--delay:0.24s;">Settle into a calm field while we choreograph your biological rhythm.</p>
+              </div>
+            </div>
+            <div class="sleepid_scene" data-sleepid-scene data-index="1" data-tone="flow" data-active="false" aria-hidden="true">
+              <div class="sleepid_scene_bg" aria-hidden="true"></div>
+              <div class="sleepid_scene_copy">
+                <p class="sleepid_scene_label">Gathering</p>
+                <h3 class="sleepid_scene_title" style="--delay:0.08s;">Signals align in liquid gradients.</h3>
+                <p class="sleepid_scene_line" style="--delay:0.24s;">Every answer you shared turns into waveforms across the SleepID threads.</p>
+              </div>
+            </div>
+            <div class="sleepid_scene" data-sleepid-scene data-index="2" data-tone="focus" data-active="false" aria-hidden="true">
+              <div class="sleepid_scene_bg" aria-hidden="true"></div>
+              <div class="sleepid_scene_copy">
+                <p class="sleepid_scene_label">Calibration</p>
+                <h3 class="sleepid_scene_title" style="--delay:0.08s;">Parallax drift refines your rhythm.</h3>
+                <p class="sleepid_scene_line" style="--delay:0.24s;">We compare cortisol rise, twilight focus, and recovery pulses to balance the arc.</p>
+              </div>
+            </div>
+            <div class="sleepid_scene" data-sleepid-scene data-index="3" data-tone="form" data-active="false" aria-hidden="true">
+              <div class="sleepid_scene_bg" aria-hidden="true"></div>
+              <div class="sleepid_scene_copy">
+                <p class="sleepid_scene_label">Formation</p>
+                <h3 class="sleepid_scene_title" style="--delay:0.08s;">Your SleepType signature crystallises.</h3>
+                <p class="sleepid_scene_line" style="--delay:0.24s;">Glasslike layers breathe in and out, revealing the cadence unique to you.</p>
+              </div>
+            </div>
+            <div class="sleepid_scene" data-sleepid-scene data-index="4" data-tone="reveal" data-active="false" aria-hidden="true">
+              <div class="sleepid_scene_bg" aria-hidden="true"></div>
+              <div class="sleepid_scene_copy">
+                <p class="sleepid_scene_label">Reveal</p>
+                <p class="sleepid_scene_line" style="--delay:0.5s;">Which means…</p>
+                <p class="sleepid_scene_line" style="--delay:1.2s;">Your SleepID is…</p>
+                <p class="sleepid_scene_reveal" style="--delay:1.9s;">SleepID ${result.id}</p>
+                <h3 class="sleepid_scene_title" style="--delay:2.5s;">${result.label}</h3>
+                <p class="sleepid_scene_line" style="--delay:3.1s;">A bespoke briefing now waits with nightly rituals and focus windows.</p>
+              </div>
+            </div>
+            <button type="button" class="sleepid_scene_nav sleepid_scene_nav--prev" data-scene-prev aria-label="Previous reveal">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button type="button" class="sleepid_scene_nav sleepid_scene_nav--next" data-scene-next aria-label="Next reveal">
+              <span aria-hidden="true">›</span>
+            </button>
+            <div class="sleepid_scene_progress" role="list" aria-label="Reveal progress">
+              <button type="button" class="sleepid_scene_dot" data-scene-progress="0" aria-label="Scene 1 of 5" aria-pressed="true"></button>
+              <button type="button" class="sleepid_scene_dot" data-scene-progress="1" aria-label="Scene 2 of 5" aria-pressed="false"></button>
+              <button type="button" class="sleepid_scene_dot" data-scene-progress="2" aria-label="Scene 3 of 5" aria-pressed="false"></button>
+              <button type="button" class="sleepid_scene_dot" data-scene-progress="3" aria-label="Scene 4 of 5" aria-pressed="false"></button>
+              <button type="button" class="sleepid_scene_dot" data-scene-progress="4" aria-label="Scene 5 of 5" aria-pressed="false"></button>
+            </div>
+            <p class="sleepid_scene_hint">Tap, click, or swipe to guide the reveal.</p>
+          </div>
+          <div class="sleepid_result_summary_shell" data-sleepid-summary data-visible="false" aria-hidden="true">
+            <div class="sleepid_result_summary_grid">
+              <div class="sleepid_result_summary_body">
+                <div class="sleepid_result_card">
+                  <div class="sleepid_result_badge" aria-live="polite"><span>${result.id}</span><span>${result.label}</span></div>
+                  <h3 class="sleepid_heading" id="sleepid-quiz-heading-{{ section.id }}">Your Sleepsona is ${result.label}</h3>
+                  <p class="sleepid_body_text">${result.summary}</p>
+                  <div class="sleepid_result_science">
+                    <h4>The Science Behind Your Type</h4>
+                    <p data-sleepid-science-copy></p>
+                  </div>
+                </div>
+              </div>
+              ${productImageUrl ? `
+                <div class="sleepid_result_visual" data-has-image="true">
+                  <div class="sleepid_result_product">
+                    <img src="${productImageUrl}" alt="SleepID ${result.id} companion illustration" loading="lazy" />
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+            <form class="sleepid_form" data-sleepid-form novalidate>
+              <div class="sleepid_form_row">
+                <label for="sleepid-email-{{ section.id }}">Email</label>
+                <input id="sleepid-email-{{ section.id }}" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+              </div>
+              <div class="sleepid_form_row">
+                <label for="sleepid-first-{{ section.id }}">First name <span aria-hidden="true" style="font-weight:400;color:var(--sleepid-ink-2);">(optional)</span></label>
+                <input id="sleepid-first-{{ section.id }}" name="first_name" type="text" placeholder="" autocomplete="given-name" />
+              </div>
+              <button type="submit" class="sleepid_primary_btn"><span>Send my SleepID brief</span></button>
+              <p class="sleepid_form_message" data-sleepid-form-message></p>
+            </form>
+          </div>
+        </div>
+      `;
+      const scienceCopy = panel.querySelector('[data-sleepid-science-copy]');
+      if (scienceCopy) {
+        const scienceKey = scienceKeyMap[result.id] || '';
+        const fallbackScience = 'Your circadian profile synthesises multiple chronobiology cues.\nStay observant of how light and routine influence your focus windows.';
+        scienceCopy.textContent = scienceExplanationMap[scienceKey] || fallbackScience;
+      }
+      const form = panel.querySelector('[data-sleepid-form]');
+      const messageEl = panel.querySelector('[data-sleepid-form-message]');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const email = (formData.get('email') || '').toString().trim();
+        const firstName = (formData.get('first_name') || '').toString().trim();
+        if (!email) {
+          messageEl.textContent = 'Please add an email to receive your insights.';
+          messageEl.dataset.state = 'error';
+          return;
+        }
+        messageEl.textContent = 'Sending your SleepID brief…';
+        messageEl.dataset.state = 'sending';
+        fetch(`https://a.klaviyo.com/api/v2/list/${encodeURIComponent(config.klaviyoList)}/subscribe`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            profiles: [
+              {
+                email: email,
+                first_name: firstName,
+                properties: {
+                  sleepid_result: resultType
+                }
+              }
+            ]
+          })
+        }).then(function(response) {
+          if (!response.ok) {
+            throw new Error('Request failed');
+          }
+          return response.json();
+        }).then(function() {
+          messageEl.textContent = 'SleepID brief sent. Watch your inbox for insights.';
+          messageEl.dataset.state = 'success';
+        }).catch(function() {
+          messageEl.textContent = 'We hit a snag sending that. Please retry in a moment.';
+          messageEl.dataset.state = 'error';
+        });
+      });
+      showPanel(panel);
+      runCinematicSequence(panel);
+    }
+
+    function resetQuiz() {
+      exitFullscreenExperience();
+      currentIndex = -1;
+      answers.fill(null);
+      resultType = null;
+      clearAnalyzingTimers();
+      clearCinematicTimers();
+      updateProgress(0);
+      const introPanel = document.createElement('div');
+      introPanel.className = 'sleepid_stage_panel sleepid_fade_content';
+      introPanel.dataset.stage = 'intro';
+      const introCredibility = credibilityText
+        ? '<div class="sleepid_credibility" data-sleepid-credibility><span>' + escapeHtml(credibilityText) + '</span></div>'
+        : '';
+      introPanel.innerHTML = `
+        <h2 class="sleepid_heading">Begin your Sleepsona</h2>
+        ${introCredibility}
+        <p class="sleepid_intro_text">Take a slow, guided journey to map your biological rhythm. We’ll breathe together, one question at a time.</p>
+        <button type="button" class="sleepid_primary_btn" data-sleepid-start><span>Enter the SleepID Quiz</span></button>
+      `;
+      showPanel(introPanel);
+      const newStartBtn = stage.querySelector('[data-sleepid-start]');
+      if (newStartBtn) {
+        newStartBtn.addEventListener('click', handleStart);
+      }
+    }
+
+    function handleStart() {
+      enterFullscreenExperience();
+      goToQuestion(0);
+    }
+
+    if (startBtn) {
+      startBtn.addEventListener('click', handleStart);
+    }
+
+    rootEl.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') {
+        const isFullscreen = rootEl.getAttribute('data-fullscreen') === 'true';
+        if (isFullscreen || (currentIndex > -1 && currentIndex < questions.length)) {
+          event.preventDefault();
+          resetQuiz();
+        }
+      }
+    });
+
+    updateProgress(0);
+  })();
+</script>
+{% schema %}
+{
+  "name": "SleepID quiz section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo list ID",
+      "default": "LIST_ID_PLACEHOLDER"
+    },
+    {
+      "type": "url",
+      "id": "logo_url",
+      "label": "Logo URL",
+    },
+    {
+      "type": "text",
+      "id": "credibility_text",
+      "label": "Credibility tagline",
+      "default": "Based on chronobiology research (Harvard • Munich • Stanford)"
+    },
+    {
+      "type": "text",
+      "id": "analyze_button_label",
+      "label": "Analyze button label",
+      "default": "Analyze my results"
+    },
+    {
+      "type": "range",
+      "id": "analyze_duration_seconds",
+      "label": "Analyzing duration (seconds)",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image_aurora",
+      "label": "SleepID A image"
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image_day",
+      "label": "SleepID B image"
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image_lumen",
+      "label": "SleepID C image"
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image_eclipse",
+      "label": "SleepID D image"
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image_night",
+      "label": "SleepID E image"
+    },
+    {
+      "type": "url",
+      "id": "chime_url",
+      "label": "Chime audio URL",
+    },
+    {
+      "type": "color",
+      "id": "bg_0",
+      "label": "Background color 1",
+      "default": "#f7f7f7"
+    },
+    {
+      "type": "color",
+      "id": "bg_1",
+      "label": "Background color 2",
+      "default": "#ececec"
+    },
+    {
+      "type": "color",
+      "id": "ink_1",
+      "label": "Primary text color",
+      "default": "#2f3437"
+    },
+    {
+      "type": "color",
+      "id": "ink_2",
+      "label": "Secondary text color",
+      "default": "#71787c"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "science_context",
+      "name": "Science context",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question_id",
+          "label": "Question reference",
+          "default": "alertness_window"
+        },
+        {
+          "type": "textarea",
+          "id": "science_context",
+          "label": "Science context line",
+          "default": "Morning alertness is often linked to early cortisol peaks."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SleepID quiz section",
+      "blocks": [
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "alertness_window",
+            "science_context": "Morning alertness is often linked to early cortisol peaks."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "wake_energy",
+            "science_context": "Post-wake clarity reflects how rapidly your cortisol curve ascends."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "evening_signal",
+            "science_context": "Melatonin release timing shapes when your first yawns arrive."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "weekend_pattern",
+            "science_context": "Shifts on free days reveal the size of your social jetlag window."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "midday_slump",
+            "science_context": "Ultradian dips and glucose rhythms drive midday energy troughs."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "evening_activity",
+            "science_context": "Late-evening productivity can mirror delayed circadian temperature rise."
+          }
+        },
+        {
+          "type": "science_context",
+          "settings": {
+            "question_id": "sleep_latency",
+            "science_context": "Sleep latency shows how aligned your melatonin onset is with bedtime."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

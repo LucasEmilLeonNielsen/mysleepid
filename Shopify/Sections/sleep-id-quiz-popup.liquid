@@ -1,0 +1,1409 @@
+{% comment %}
+  Sleepsona SleepID Quiz Popup Section
+  Paste into Shopify sections directory. Configure Klaviyo list ID and endpoint in the section settings.
+{% endcomment %}
+
+<div id="sleepid-quiz-popup-{{ section.id }}" class="sleepid-quiz" data-auto-open="{{ section.settings.auto_open }}" data-delay="{{ section.settings.open_delay }}">
+  <button type="button" class="sleepid-quiz__trigger" aria-haspopup="dialog" aria-expanded="false">
+    {{ section.settings.trigger_label | escape }}
+  </button>
+  <div class="sleepid-quiz__overlay" role="presentation" hidden></div>
+  <section
+    class="sleepid-quiz__dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sleepid-quiz-title-{{ section.id }}"
+    aria-hidden="true"
+    tabindex="-1"
+    hidden
+  >
+    <div class="sleepid-quiz__frame">
+      <div class="sleepid-quiz__background" aria-hidden="true"></div>
+      <button type="button" class="sleepid-quiz__close" aria-label="{{ 'sections.slideshow.close' | t }}">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="sleepid-quiz__logo" role="img" aria-label="Sleepsona logo">
+        <svg viewBox="0 0 120 160" class="sleepid-logo">
+          <path
+            d="M60 10c-24.3 0-44 19.7-44 44v52c0 24.3 19.7 44 44 44s44-19.7 44-44V54C104 29.7 84.3 10 60 10zm0 8c19.9 0 36 16.1 36 36v52c0 19.9-16.1 36-36 36s-36-16.1-36-36V54c0-19.9 16.1-36 36-36z"
+            fill="url(#sleepid-logo-gradient-{{ section.id }})"
+            opacity="0.9"
+          ></path>
+          <path
+            d="M42 46c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8zm20 14c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8zm-10 24c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8z"
+            fill="currentColor"
+            opacity="0.35"
+          ></path>
+          <defs>
+            <linearGradient id="sleepid-logo-gradient-{{ section.id }}" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="var(--sleepid-brand-1)" />
+              <stop offset="100%" stop-color="var(--sleepid-accent-1)" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="sleepid-quiz__progress">
+        <div class="sleepid-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="sleepid-progress-bar__fill"></span>
+        </div>
+      </div>
+      <div class="sleepid-quiz__card" aria-live="polite">
+        <div class="sleepid-quiz__card-inner">
+          <div class="sleepid-progress-ring" data-progress="0" role="img" aria-label="Progress">
+            <svg viewBox="0 0 120 120" class="sleepid-progress-ring__svg">
+              <circle class="sleepid-progress-ring__track" cx="60" cy="60" r="54" />
+              <circle class="sleepid-progress-ring__indicator" cx="60" cy="60" r="54" stroke-dasharray="339.292" stroke-dashoffset="339.292" />
+            </svg>
+            <span class="sleepid-progress-ring__label">0%</span>
+          </div>
+          <div class="sleepid-quiz__content" data-step="intro">
+            <div class="sleepid-slide sleepid-slide--active" data-slide="intro">
+              <h2 id="sleepid-quiz-title-{{ section.id }}" class="sleepid-quiz__title">{{ section.settings.heading | escape }}</h2>
+              <p class="sleepid-quiz__description">{{ section.settings.description }}</p>
+              <div class="sleepid-quiz__fields">
+                <label class="sleepid-field">
+                  <span>{{ section.settings.name_label | escape }}</span>
+                  <input type="text" name="first_name" autocomplete="given-name" placeholder="{{ section.settings.name_placeholder | escape }}" />
+                </label>
+                <label class="sleepid-field">
+                  <span>{{ section.settings.email_label | escape }}</span>
+                  <input type="email" name="email" autocomplete="email" placeholder="{{ section.settings.email_placeholder | escape }}" required />
+                </label>
+              </div>
+              <button type="button" class="sleepid-button sleepid-button--primary" data-action="start">{{ section.settings.start_label | escape }}</button>
+              <p class="sleepid-quiz__privacy">{{ section.settings.privacy_text }}</p>
+            </div>
+            <div class="sleepid-slide" data-slide="question" hidden>
+              <div class="sleepid-quiz__microcopy" data-microcopy></div>
+              <h3 class="sleepid-question" data-question></h3>
+              <div class="sleepid-answers" role="radiogroup" aria-live="polite"></div>
+              <div class="sleepid-quiz__actions">
+                <button type="button" class="sleepid-button sleepid-button--ghost" data-action="prev">{{ section.settings.prev_label | escape }}</button>
+              </div>
+              <div class="sleepid-quiz__badge" aria-hidden="true"></div>
+            </div>
+            <div class="sleepid-slide" data-slide="loader" hidden>
+              <div class="sleepid-loader">
+                <div class="sleepid-loader__wave" aria-hidden="true">
+                  <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+                    <path d="M0 20 Q 25 5 50 20 T 100 20 T 150 20 T 200 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    <path class="sleepid-loader__z" d="M20 10 h14 l-9 12 h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path class="sleepid-loader__z" d="M90 10 h14 l-9 12 h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path class="sleepid-loader__z" d="M160 10 h14 l-9 12 h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <p class="sleepid-loader__text">{{ section.settings.loader_text | escape }}</p>
+              </div>
+            </div>
+            <div class="sleepid-slide" data-slide="result" hidden>
+              <div class="sleepid-result" data-result></div>
+              <form class="sleepid-form" method="post">
+                <input type="hidden" name="g" value="{{ section.settings.klaviyo_list_id | escape }}" />
+                <input type="hidden" name="SleepID" value="" data-sleepid-input />
+                <input type="hidden" name="SleepIDAnswers" value="" data-answers-input />
+                <input type="hidden" name="source" value="SleepID Quiz" />
+                <label class="sleepid-field">
+                  <span>{{ section.settings.name_label | escape }}</span>
+                  <input type="text" name="first_name" autocomplete="given-name" placeholder="{{ section.settings.name_placeholder | escape }}" />
+                </label>
+                <label class="sleepid-field">
+                  <span>{{ section.settings.email_label | escape }}</span>
+                  <input type="email" name="email" autocomplete="email" placeholder="{{ section.settings.email_placeholder | escape }}" required />
+                </label>
+                <button type="submit" class="sleepid-button sleepid-button--primary">{{ section.settings.submit_label | escape }}</button>
+                <p class="sleepid-form__status" role="status" aria-live="polite"></p>
+              </form>
+            </div>
+            <div class="sleepid-slide" data-slide="halfway" hidden>
+              <p class="sleepid-halfway">{{ section.settings.halfway_text }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="sleepid-quiz__footer">
+        <p>{{ section.settings.footer_text }}</p>
+      </footer>
+      <audio class="sleepid-audio" preload="auto" {% if section.settings.chime_url != blank %}src="{{ section.settings.chime_url | escape }}"{% endif %}></audio>
+    </div>
+  </section>
+</div>
+
+<style>
+  #sleepid-quiz-popup-{{ section.id }} {
+    --sleepid-bg-0: {{ section.settings.bg_0 | default: '#F7F7F7' }};
+    --sleepid-bg-1: {{ section.settings.bg_1 | default: '#ECECEC' }};
+    --sleepid-ink-1: {{ section.settings.ink_1 | default: '#1F2937' }};
+    --sleepid-ink-2: {{ section.settings.ink_2 | default: '#6B7280' }};
+    --sleepid-brand-1: {{ section.settings.brand_1 | default: '#98A0A6' }};
+    --sleepid-accent-1: {{ section.settings.accent_1 | default: '#EAE4DC' }};
+    --sleepid-card: rgba(255, 255, 255, 0.55);
+    --sleepid-card-stroke: rgba(255, 255, 255, 0.65);
+    --sleepid-card-blur: 18px;
+    --sleepid-btn-base: {{ section.settings.btn_base | default: '#F5F5F5' }};
+    --sleepid-btn-hover: {{ section.settings.btn_hover | default: '#EEF2F3' }};
+    --sleepid-btn-active: {{ section.settings.btn_active | default: '#E1E8EB' }};
+    --sleepid-shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.04);
+    --sleepid-radius-card: 24px;
+    --sleepid-radius-button: 16px;
+    --sleepid-transition: 280ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    --sleepid-max-width: min(520px, 92vw);
+    font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--sleepid-radius-button);
+    background: var(--sleepid-brand-1);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform var(--sleepid-transition), box-shadow var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__trigger:focus-visible {
+    outline: 2px solid var(--sleepid-accent-1);
+    outline-offset: 4px;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__trigger:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--sleepid-shadow-sm);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 24, 28, 0.28);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    transition: opacity var(--sleepid-transition);
+    z-index: 30;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__dialog {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__dialog[aria-hidden='false'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__overlay[aria-hidden='false'] {
+    opacity: 1;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__frame {
+    position: relative;
+    width: var(--sleepid-max-width);
+    border-radius: calc(var(--sleepid-radius-card) + 12px);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__background {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.9), transparent 55%),
+      linear-gradient(135deg, var(--sleepid-bg-0), var(--sleepid-bg-1));
+    --line-color: rgba(152, 160, 166, 0.18);
+    mask-image: radial-gradient(circle at 0 0, #000 40%, transparent 80%);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__background::after {
+    content: '';
+    position: absolute;
+    inset: -60% -10%;
+    background-image: repeating-radial-gradient(
+        circle at 10% 10%,
+        transparent 0,
+        transparent 38px,
+        var(--line-color) 40px,
+        var(--line-color) 41px
+      ),
+      repeating-radial-gradient(
+        circle at 90% 90%,
+        transparent 0,
+        transparent 32px,
+        rgba(152, 160, 166, 0.1) 34px,
+        rgba(152, 160, 166, 0.1) 35px
+      );
+    opacity: 0.4;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Cpath d="M200 10c-88 0-160 72-160 160s72 160 160 160 160-72 160-160S288 10 200 10zm0 16c79.5 0 144 64.5 144 144s-64.5 144-144 144-144-64.5-144-144S120.5 26 200 26z" fill="none" stroke="rgba(152,160,166,0.12)" stroke-width="2"/%3E%3C/svg%3E')
+      center/cover no-repeat;
+    mix-blend-mode: soft-light;
+    opacity: 0.35;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.1));
+    pointer-events: none;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    color: var(--sleepid-ink-1);
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: var(--sleepid-shadow-sm);
+    transition: transform var(--sleepid-transition), background var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__close:hover {
+    transform: rotate(8deg);
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__close:focus-visible {
+    outline: 2px solid var(--sleepid-brand-1);
+    outline-offset: 2px;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1rem 1.5rem;
+    color: var(--sleepid-brand-1);
+    animation: sleepid-logo-breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes sleepid-logo-breathe {
+    0% {
+      transform: scale(0.96);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1);
+    }
+    70% {
+      transform: scale(0.98);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-logo {
+    width: clamp(58px, 14vw, 82px);
+    height: auto;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__progress {
+    padding: 0 2.5rem 1.25rem;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-bar {
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    overflow: hidden;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-bar__fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--sleepid-brand-1), var(--sleepid-accent-1));
+    transition: width 360ms ease;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__card {
+    position: relative;
+    margin: 0 auto;
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    width: calc(var(--sleepid-max-width) - clamp(2rem, 4vw, 3.5rem));
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__card-inner {
+    position: relative;
+    border-radius: var(--sleepid-radius-card);
+    background: var(--sleepid-card);
+    backdrop-filter: blur(var(--sleepid-card-blur));
+    border: 1px solid var(--sleepid-card-stroke);
+    box-shadow: var(--sleepid-shadow-sm);
+    padding: clamp(2rem, 4vw, 2.75rem);
+    overflow: hidden;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring {
+    position: absolute;
+    inset: clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.5rem) auto auto;
+    width: clamp(96px, 24vw, 120px);
+    height: auto;
+    display: grid;
+    place-items: center;
+    color: var(--sleepid-brand-1);
+    animation: sleepid-ring-breathe 5s ease-in-out infinite;
+  }
+
+  @keyframes sleepid-ring-breathe {
+    0% {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring__svg {
+    width: 100%;
+    height: auto;
+    transform: rotate(-90deg);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring__track {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.4);
+    stroke-width: 6;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring__indicator {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 320ms ease;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring__label {
+    position: absolute;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--sleepid-ink-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__content {
+    position: relative;
+    min-height: clamp(20rem, 40vw, 24rem);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-slide {
+    position: absolute;
+    inset: 0;
+    padding-right: clamp(0rem, 2vw, 2.5rem);
+    display: grid;
+    align-content: start;
+    gap: 1.5rem;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 300ms ease, transform 300ms ease;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-slide--active {
+    position: relative;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-slide[hidden] {
+    display: none;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__title {
+    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    color: var(--sleepid-ink-1);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__description,
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__privacy,
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__footer p {
+    color: var(--sleepid-ink-2);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__fields {
+    display: grid;
+    gap: 1rem;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-field {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--sleepid-ink-2);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-field input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: var(--sleepid-radius-button);
+    border: 1px solid rgba(152, 160, 166, 0.35);
+    background: rgba(255, 255, 255, 0.85);
+    transition: border var(--sleepid-transition), box-shadow var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-field input:focus-visible {
+    outline: 2px solid var(--sleepid-brand-1);
+    outline-offset: 2px;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--sleepid-accent-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.6rem;
+    border-radius: var(--sleepid-radius-button);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.98rem;
+    transition: background var(--sleepid-transition), transform var(--sleepid-transition), box-shadow var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-button--primary {
+    background: var(--sleepid-brand-1);
+    color: #fff;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-button--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--sleepid-shadow-sm);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-button--ghost {
+    background: transparent;
+    color: var(--sleepid-ink-2);
+    border: 1px solid rgba(152, 160, 166, 0.3);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-button:focus-visible {
+    outline: 2px solid var(--sleepid-accent-1);
+    outline-offset: 2px;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__microcopy {
+    min-height: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--sleepid-ink-2);
+    opacity: 0.8;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-question {
+    font-size: clamp(1.35rem, 3.6vw, 1.6rem);
+    margin: 0;
+    color: var(--sleepid-ink-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answers {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.05rem 1.1rem 1.05rem 1.3rem;
+    border-radius: var(--sleepid-radius-button);
+    background: var(--sleepid-btn-base);
+    border: 1px solid transparent;
+    box-shadow: none;
+    cursor: pointer;
+    transition: transform var(--sleepid-transition), background var(--sleepid-transition), box-shadow var(--sleepid-transition), border var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer:hover {
+    transform: translateY(-2px) scale(1.01);
+    background: var(--sleepid-btn-hover);
+    box-shadow: var(--sleepid-shadow-sm);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer:focus-visible {
+    outline: 2px solid var(--sleepid-brand-1);
+    outline-offset: 2px;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer[data-selected='true'] {
+    background: var(--sleepid-btn-active);
+    border-color: var(--sleepid-brand-1);
+    box-shadow: var(--sleepid-shadow-sm);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer__label {
+    font-size: 1rem;
+    color: var(--sleepid-ink-1);
+    font-weight: 600;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer__hint {
+    font-size: 0.82rem;
+    color: var(--sleepid-ink-2);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer__icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.45;
+    transition: transform var(--sleepid-transition);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-answer:hover .sleepid-answer__icon {
+    transform: translateY(-50%) translateX(4px);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__badge {
+    position: absolute;
+    inset: auto 1.5rem 1.5rem auto;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 320ms ease, transform 320ms ease;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__badge.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__badge svg {
+    width: 46px;
+    height: 46px;
+    opacity: 0.35;
+    color: var(--sleepid-brand-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-loader {
+    display: grid;
+    place-items: center;
+    gap: 1.5rem;
+    min-height: 16rem;
+    text-align: center;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-loader__wave {
+    width: 100%;
+    color: var(--sleepid-brand-1);
+    animation: sleepid-wave 1.8s ease-in-out infinite;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-loader__text {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--sleepid-ink-1);
+    font-weight: 600;
+  }
+
+  @keyframes sleepid-wave {
+    0% {
+      transform: translateX(-1%);
+    }
+    50% {
+      transform: translateX(1%);
+    }
+    100% {
+      transform: translateX(-1%);
+    }
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-loader__z {
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    animation: sleepid-z-draw 1.5s ease-in-out infinite;
+  }
+
+  @keyframes sleepid-z-draw {
+    0% {
+      stroke-dashoffset: 32;
+    }
+    60% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: 32;
+    }
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-result {
+    display: grid;
+    gap: 1.25rem;
+    text-align: left;
+    color: var(--sleepid-ink-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-result__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-result__badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(152, 160, 166, 0.12);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 1.45rem;
+    color: var(--sleepid-brand-1);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-result__title {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-result__description {
+    margin: 0;
+    color: var(--sleepid-ink-2);
+    line-height: 1.7;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-form__status {
+    min-height: 1.25rem;
+    font-size: 0.9rem;
+    color: var(--sleepid-ink-2);
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-halfway {
+    margin: 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--sleepid-ink-1);
+    font-weight: 600;
+  }
+
+  #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__footer {
+    padding: 1.5rem 2.5rem 2.5rem;
+    text-align: center;
+  }
+
+  @media (max-width: 720px) {
+    #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__frame {
+      width: min(92vw, 420px);
+    }
+
+    #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__card {
+      width: 100%;
+      padding: clamp(1rem, 6vw, 1.75rem);
+    }
+
+    #sleepid-quiz-popup-{{ section.id }} .sleepid-progress-ring {
+      position: relative;
+      inset: auto;
+      justify-self: end;
+      margin-bottom: 0.5rem;
+    }
+
+    #sleepid-quiz-popup-{{ section.id }} .sleepid-quiz__content {
+      min-height: 20rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #sleepid-quiz-popup-{{ section.id }} * {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const sectionId = '{{ section.id }}';
+    const root = document.getElementById('sleepid-quiz-popup-' + sectionId);
+    if (!root) return;
+
+    const overlay = root.querySelector('.sleepid-quiz__overlay');
+    const dialog = root.querySelector('.sleepid-quiz__dialog');
+    const trigger = root.querySelector('.sleepid-quiz__trigger');
+    const closeBtn = root.querySelector('.sleepid-quiz__close');
+    const audioEl = root.querySelector('.sleepid-audio');
+    const progressFill = root.querySelector('.sleepid-progress-bar__fill');
+    const progressRing = root.querySelector('.sleepid-progress-ring');
+    const progressIndicator = root.querySelector('.sleepid-progress-ring__indicator');
+    const progressLabel = root.querySelector('.sleepid-progress-ring__label');
+    const slides = {
+      intro: root.querySelector('[data-slide="intro"]'),
+      question: root.querySelector('[data-slide="question"]'),
+      loader: root.querySelector('[data-slide="loader"]'),
+      result: root.querySelector('[data-slide="result"]'),
+      halfway: root.querySelector('[data-slide="halfway"]'),
+    };
+    const microcopyEl = root.querySelector('[data-microcopy]');
+    const questionEl = root.querySelector('[data-question]');
+    const answersWrapper = root.querySelector('.sleepid-answers');
+    const badge = root.querySelector('.sleepid-quiz__badge');
+    const resultContainer = root.querySelector('[data-result]');
+    const form = root.querySelector('.sleepid-form');
+    const statusMessage = root.querySelector('.sleepid-form__status');
+    const sleepIdInput = root.querySelector('[data-sleepid-input]');
+    const answersInput = root.querySelector('[data-answers-input]');
+
+    const quizData = [
+      {
+        id: 'focus-time',
+        title: 'När på dygnet känner du din starkaste fokusrytm?',
+        microHint: 'Late focus is common for Night Types.',
+        icon: 'moon',
+        answers: [
+          { label: 'Före 08:00 – jag är igång direkt.', sleepId: 'A', microHint: 'Classic Dawn Harmonizer energy.' },
+          { label: 'Runt 10–13 – mitt i förmiddagen.', sleepId: 'B', microHint: 'Steady rhythm, balanced flow.' },
+          { label: 'Efter 15 – då vaknar jag till på riktigt.', sleepId: 'D', microHint: 'Evening lift points to Nightwave.' },
+          { label: 'Efter 21 – jag älskar sena timmar.', sleepId: 'E', microHint: 'Lunar Visionaries thrive late.' },
+        ],
+      },
+      {
+        id: 'sleep-latency',
+        title: 'Hur lång tid tar det vanligtvis att somna?',
+        microHint: 'Long latency often links to evening rhythm.',
+        icon: 'star',
+        answers: [
+          { label: 'Under 10 minuter.', sleepId: 'A', microHint: 'Efficient sleep onset.' },
+          { label: '10–20 minuter.', sleepId: 'B', microHint: 'Balanced onset window.' },
+          { label: '20–35 minuter.', sleepId: 'C', microHint: 'Slight delay is common for Drift Types.' },
+          { label: '35+ minuter.', sleepId: 'E', microHint: 'Night owls often linger before rest.' },
+        ],
+      },
+      {
+        id: 'evening-routine',
+        title: 'Hur ser din sista timme före sänggående ut?',
+        microHint: 'Soft landings support consistent rhythms.',
+        icon: 'wave',
+        answers: [
+          { label: 'Låg belysning, lugn rutin, inga skärmar.', sleepId: 'A', microHint: 'Textbook wind-down.' },
+          { label: 'Lite skärmtid men försöker varva ner.', sleepId: 'B', microHint: 'Moderation keeps balance.' },
+          { label: 'Tränar/jobbar/kreativt flow sent.', sleepId: 'E', microHint: 'Creative surges tilt late.' },
+          { label: 'TV/scroll till jag blir trött.', sleepId: 'D', microHint: 'Nightwave drift detected.' },
+        ],
+      },
+      {
+        id: 'morning-inertia',
+        title: 'Hur känns de första 60 minuterna på morgonen?',
+        microHint: 'Morning heaviness can reveal your chronotype.',
+        icon: 'pulse',
+        answers: [
+          { label: 'Pigg och klar – redo direkt.', sleepId: 'A', microHint: 'Signature Dawn alertness.' },
+          { label: 'Lite seg, men funkar efter kaffe.', sleepId: 'B', microHint: 'Balanced inertia profile.' },
+          { label: 'Riktigt tung – tar lång tid att vakna.', sleepId: 'D', microHint: 'Nightwave inertia showing.' },
+          { label: 'Snuddar snooze flera gånger.', sleepId: 'E', microHint: 'Lunar rhythms prefer slow dawns.' },
+        ],
+      },
+      {
+        id: 'last-caffeine',
+        title: 'När tar du dagens sista koffeindryck?',
+        microHint: 'Later caffeine shifts your internal clock forward.',
+        icon: 'wave',
+        answers: [
+          { label: 'Före 12:00.', sleepId: 'A', microHint: 'Supports early alignment.' },
+          { label: 'Runt 14:00.', sleepId: 'B', microHint: 'Keeps rhythm in check.' },
+          { label: 'Efter 16:00.', sleepId: 'D', microHint: 'Adds to Nightwave tendencies.' },
+          { label: 'Efter 19:00.', sleepId: 'E', microHint: 'Lunar types stretch the day.' },
+        ],
+      },
+      {
+        id: 'quality',
+        title: 'Hur nöjd är du med din sömnkvalitet (1–10)?',
+        microHint: 'Higher satisfaction often aligns with rhythm fit.',
+        icon: 'star',
+        answers: [
+          { label: '9–10: Jag sover fantastiskt.', sleepId: 'A', microHint: 'Aligned sleep signature.' },
+          { label: '7–8: Ganska nöjd.', sleepId: 'B', microHint: 'Steady baseline.' },
+          { label: '5–6: Okej men utrymme att växa.', sleepId: 'C', microHint: 'Adaptable Drift pattern.' },
+          { label: '1–4: Jag jagar bättre nätter.', sleepId: 'D', microHint: 'Nightwave unrest detected.' },
+        ],
+      },
+      {
+        id: 'barrier',
+        title: 'Vad är ditt största hinder för återhämtande sömn?',
+        microHint: 'Understanding barriers unlocks your SleepID.',
+        icon: 'moon',
+        answers: [
+          { label: 'Tidiga uppstigningar/stressiga morgnar.', sleepId: 'A', microHint: 'Protect your dawn routine.' },
+          { label: 'Svårt att varva ner mentalt.', sleepId: 'D', microHint: 'Nightwave minds stay alert.' },
+          { label: 'Skärmtid och kreativitet på kvällen.', sleepId: 'E', microHint: 'Lunar focus extends late.' },
+          { label: 'Oregelbundna tider/resor.', sleepId: 'C', microHint: 'Flux makes Drift Types versatile.' },
+        ],
+      },
+    ];
+
+    const sleepProfiles = {
+      A: {
+        name: 'Dawn Harmonizer',
+        description:
+          'Du synkar naturligt med tidiga rytmer. Vi guidar dig att skydda din morgonenergi och ge kvällarna mjuk landning.',
+      },
+      B: {
+        name: 'Day Rhythmist',
+        description:
+          'Din sömncykel är balanserad men känslig för mikrovanor. Finslipa nyckelrutiner så fortsätter din jämna flow.',
+      },
+      C: {
+        name: 'Drift Voyager',
+        description:
+          'Du rör dig flexibelt mellan dygnsrytmers toppar. Vi hjälper dig bygga mikrofästen som håller kursen stabil.',
+      },
+      D: {
+        name: 'Nightwave Seeker',
+        description:
+          'Kvällens kreativa toppar driver dig. Med riktade kvällsritualer kan du ta vara på vågen och ändå sova mjukt.',
+      },
+      E: {
+        name: 'Lunar Visionary',
+        description:
+          'Du blommar i nattens timmar. Tillsammans skapar vi ett SleepID-program som ger dig frihet utan att kompromissa återhämtning.',
+      },
+    };
+
+    let state = {
+      index: 0,
+      answers: [],
+      progress: 0,
+      hasStarted: false,
+    };
+
+    const iconMap = {
+      moon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30.5 4c-6.5 2.4-11 8.6-11 15.9 0 9.2 7.5 16.7 16.7 16.7 3.2 0 6.2-0.9 8.7-2.5C40.6 40.6 33 46 24.3 46 11.7 46 1.5 35.8 1.5 23.2 1.5 12.1 9 2.9 19.1 0c-1.4 2.6-2.1 5.5-2.1 8.5 0 9.2 7.5 16.7 16.7 16.7 2.4 0 4.8-0.5 6.8-1.5-3.3-2.1-5.5-5.8-5.5-10C35 10.2 33.3 6.5 30.5 4z" fill="currentColor"/></svg>',
+      star: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 4l5.9 12 13.1 1.9-9.5 9.2 2.2 13-11.7-6.2-11.7 6.2 2.2-13-9.5-9.2L18.1 16 24 4z" fill="currentColor" opacity="0.8"/></svg>',
+      wave: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 28c4 0 4-8 8-8s4 8 8 8 4-8 8-8 4 8 8 8 4-8 8-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+      pulse: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 26h9l4-10 8 20 5-12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    };
+
+    const arrowIcon =
+      '<svg class="sleepid-answer__icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    const openDialog = () => {
+      dialog.hidden = false;
+      overlay.hidden = false;
+      requestAnimationFrame(() => {
+        dialog.setAttribute('aria-hidden', 'false');
+        overlay.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        dialog.focus();
+      });
+      document.addEventListener('keydown', handleKeydown);
+    };
+
+    const closeDialog = () => {
+      dialog.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden', 'true');
+      trigger.setAttribute('aria-expanded', 'false');
+      setTimeout(() => {
+        dialog.hidden = true;
+        overlay.hidden = true;
+      }, 280);
+      document.removeEventListener('keydown', handleKeydown);
+    };
+
+    const handleKeydown = (event) => {
+      if (event.key === 'Escape') {
+        closeDialog();
+      }
+    };
+
+    trigger.addEventListener('click', openDialog);
+    overlay.addEventListener('click', closeDialog);
+    closeBtn.addEventListener('click', closeDialog);
+
+    const renderProgress = () => {
+      const total = quizData.length;
+      const currentIndex = Math.min(state.index, total);
+      const progress = state.hasStarted ? (currentIndex / total) * 100 : 0;
+      progressFill.style.width = progress + '%';
+      progressRing.dataset.progress = progress.toFixed(0);
+      const circumference = 339.292;
+      const dashOffset = circumference - (progress / 100) * circumference;
+      progressIndicator.style.strokeDashoffset = dashOffset;
+      progressLabel.textContent = Math.round(progress) + '%';
+      progressRing.setAttribute('aria-label', 'Progress ' + Math.round(progress) + ' percent');
+      progressFill.setAttribute('aria-valuenow', Math.round(progress));
+    };
+
+    const setActiveSlide = (name) => {
+      Object.keys(slides).forEach((key) => {
+        const slide = slides[key];
+        if (!slide) return;
+        if (key === name) {
+          slide.hidden = false;
+          slide.classList.add('sleepid-slide--active');
+        } else {
+          slide.classList.remove('sleepid-slide--active');
+          slide.hidden = true;
+        }
+      });
+    };
+
+    const playChime = () => {
+      if (!audioEl || !audioEl.src) return;
+      audioEl.currentTime = 0;
+      const playPromise = audioEl.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    };
+
+    const showBadge = (iconKey) => {
+      if (!badge) return;
+      badge.innerHTML = iconMap[iconKey] || '';
+      badge.classList.add('is-visible');
+      setTimeout(() => {
+        badge.classList.remove('is-visible');
+      }, 2000);
+    };
+
+    const renderQuestion = () => {
+      const current = quizData[state.index];
+      if (!current) return;
+      microcopyEl.textContent = current.microHint || '';
+      questionEl.textContent = current.title;
+      answersWrapper.innerHTML = '';
+
+      current.answers.forEach((answer, answerIndex) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sleepid-answer';
+        button.setAttribute('role', 'radio');
+        button.setAttribute('aria-checked', 'false');
+        button.dataset.sleepid = answer.sleepId;
+        button.dataset.answerIndex = String(answerIndex);
+        button.innerHTML =
+          '<span class="sleepid-answer__label">' +
+          answer.label +
+          '</span>' +
+          '<span class="sleepid-answer__hint">' +
+          (answer.microHint || '') +
+          '</span>' +
+          arrowIcon;
+
+        button.addEventListener('click', () => {
+          selectAnswer(answer.sleepId, current.id, answer.label, current.icon, answer.microHint);
+        });
+
+        button.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectAnswer(answer.sleepId, current.id, answer.label, current.icon, answer.microHint);
+          }
+        });
+
+        answersWrapper.appendChild(button);
+      });
+
+      answersWrapper.setAttribute('aria-labelledby', 'sleepid-question-' + current.id);
+      answersWrapper.querySelectorAll('.sleepid-answer')[0]?.focus();
+    };
+
+    const selectAnswer = (sleepId, questionId, label, icon, microHint) => {
+      const newEntry = { questionId, sleepId, label };
+      state.answers[state.index] = newEntry;
+      const buttons = answersWrapper.querySelectorAll('.sleepid-answer');
+      buttons.forEach((btn) => {
+        const isSelected = btn.dataset.sleepid === sleepId;
+        btn.dataset.selected = isSelected ? 'true' : 'false';
+        btn.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+      });
+      if (microHint) {
+        microcopyEl.textContent = microHint;
+      }
+      if (icon) {
+        showBadge(icon);
+      }
+      playChime();
+      setTimeout(() => {
+        nextQuestion();
+      }, 420);
+    };
+
+    const nextQuestion = () => {
+      if (state.index < quizData.length - 1) {
+        state.index += 1;
+        renderProgress();
+        renderQuestion();
+        if (state.index === Math.floor(quizData.length / 2)) {
+          showHalfwayOverlay();
+        }
+      } else {
+        finishQuiz();
+      }
+    };
+
+    const prevQuestion = () => {
+      if (state.index > 0) {
+        state.index -= 1;
+        renderProgress();
+        renderQuestion();
+      } else {
+        state.hasStarted = false;
+        state.index = 0;
+        renderProgress();
+        setActiveSlide('intro');
+      }
+    };
+
+    const showHalfwayOverlay = () => {
+      setActiveSlide('halfway');
+      setTimeout(() => {
+        setActiveSlide('question');
+      }, 2000);
+    };
+
+    const calculateSleepId = () => {
+      const scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      state.answers.forEach((answer) => {
+        if (answer && scores.hasOwnProperty(answer.sleepId)) {
+          scores[answer.sleepId] += 1;
+        }
+      });
+      const entries = Object.entries(scores);
+      entries.sort((a, b) => b[1] - a[1]);
+      return entries[0][0];
+    };
+
+    const finishQuiz = () => {
+      setActiveSlide('loader');
+      renderProgress();
+      setTimeout(() => {
+        const sleepId = calculateSleepId();
+        const profile = sleepProfiles[sleepId];
+        if (!profile) return;
+        setActiveSlide('result');
+        resultContainer.innerHTML =
+          '<div class="sleepid-result__header">' +
+          '<div class="sleepid-result__badge">' +
+          sleepId +
+          '</div>' +
+          '<div>' +
+          '<h3 class="sleepid-result__title">' +
+          profile.name +
+          '</h3>' +
+          '</div>' +
+          '</div>' +
+          '<p class="sleepid-result__description">' +
+          profile.description +
+          '</p>';
+        sleepIdInput.value = sleepId;
+        answersInput.value = JSON.stringify(state.answers);
+      }, 1600);
+    };
+
+    const startQuiz = () => {
+      const introFirstName = slides.intro.querySelector('input[name="first_name"]').value.trim();
+      const introEmail = slides.intro.querySelector('input[name="email"]').value.trim();
+      if (introEmail && form) {
+        form.querySelector('input[name="email"]').value = introEmail;
+      }
+      if (introFirstName && form) {
+        form.querySelector('input[name="first_name"]').value = introFirstName;
+      }
+      state = { index: 0, answers: [], progress: 0, hasStarted: true };
+      renderProgress();
+      setActiveSlide('question');
+      renderQuestion();
+    };
+
+    const startButton = root.querySelector('[data-action="start"]');
+    const prevButton = root.querySelector('[data-action="prev"]');
+
+    startButton.addEventListener('click', () => {
+      const emailField = slides.intro.querySelector('input[name="email"]');
+      if (emailField && !emailField.checkValidity()) {
+        emailField.reportValidity();
+        return;
+      }
+      startQuiz();
+    });
+
+    prevButton.addEventListener('click', prevQuestion);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      statusMessage.textContent = '{{ section.settings.submitting_text | escape }}';
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      const formData = new FormData(form);
+      const payload = new URLSearchParams();
+      formData.forEach((value, key) => {
+        payload.append(key, value);
+      });
+      const endpoint = '{{ section.settings.klaviyo_endpoint | default: 'https://manage.kmail-lists.com/ajax/subscriptions/subscribe' }}';
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: payload,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json().catch(() => ({}));
+        })
+        .then(() => {
+          statusMessage.textContent = '{{ section.settings.success_text | escape }}';
+          submitButton.disabled = false;
+        })
+        .catch(() => {
+          statusMessage.textContent = '{{ section.settings.error_text | escape }}';
+          submitButton.disabled = false;
+        });
+    });
+
+    const autoOpen = root.dataset.autoOpen === 'true';
+    const delay = parseInt(root.dataset.delay, 10) || 0;
+    if (autoOpen) {
+      setTimeout(openDialog, delay);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SleepID Quiz Popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "trigger_label",
+      "label": "Trigger button label",
+      "default": "Take the Sleepsona Test"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_open",
+      "label": "Auto open on page load",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "open_delay",
+      "label": "Auto open delay (ms)",
+      "min": 0,
+      "max": 9000,
+      "step": 1000,
+      "default": 3000
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Intro heading",
+      "default": "Discover your Sleepsona SleepID"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Intro description",
+      "default": "<p>Answer seven calming questions to map your circadian rhythm and unlock a personalised Sleepsona ritual.</p>"
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Name label",
+      "default": "Your name"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name placeholder",
+      "default": "e.g. Linnea"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "you@example.com"
+    },
+    {
+      "type": "text",
+      "id": "start_label",
+      "label": "Start button label",
+      "default": "Begin the Sleepsona Test"
+    },
+    {
+      "type": "text",
+      "id": "prev_label",
+      "label": "Previous button label",
+      "default": "Back"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Send my Sleepsona profile"
+    },
+    {
+      "type": "text",
+      "id": "loader_text",
+      "label": "Loader text",
+      "default": "Analyzing your rhythm…"
+    },
+    {
+      "type": "richtext",
+      "id": "privacy_text",
+      "label": "Privacy microcopy",
+      "default": "<p>We respect your inbox. Opt out anytime.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "<p>Each answer helps us tailor your Sleepsona.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "halfway_text",
+      "label": "Halfway overlay text",
+      "default": "<p>You’re halfway to discovering your Sleepsona.</p>"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo list ID (g)",
+      "default": "YOUR_KLAVIYO_LIST_ID"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_endpoint",
+      "label": "Klaviyo endpoint",
+      "default": "https://manage.kmail-lists.com/ajax/subscriptions/subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Success message",
+      "default": "Thanks! Check your inbox for your Sleepsona insights."
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Error message",
+      "default": "We couldn’t save your profile just now. Try again in a moment."
+    },
+    {
+      "type": "text",
+      "id": "submitting_text",
+      "label": "Submitting message",
+      "default": "Saving your SleepID…"
+    },
+    {
+      "type": "color",
+      "id": "bg_0",
+      "label": "Background gradient start",
+      "default": "#F7F7F7"
+    },
+    {
+      "type": "color",
+      "id": "bg_1",
+      "label": "Background gradient end",
+      "default": "#ECECEC"
+    },
+    {
+      "type": "color",
+      "id": "ink_1",
+      "label": "Primary ink",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "ink_2",
+      "label": "Secondary ink",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "brand_1",
+      "label": "Brand color",
+      "default": "#98A0A6"
+    },
+    {
+      "type": "color",
+      "id": "accent_1",
+      "label": "Accent color",
+      "default": "#EAE4DC"
+    },
+    {
+      "type": "color",
+      "id": "btn_base",
+      "label": "Answer base color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "btn_hover",
+      "label": "Answer hover color",
+      "default": "#EEF2F3"
+    },
+    {
+      "type": "color",
+      "id": "btn_active",
+      "label": "Answer active color",
+      "default": "#E1E8EB"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SleepID Quiz Popup"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}{% endstylesheet %}
+{% javascript %}{% endjavascript %}

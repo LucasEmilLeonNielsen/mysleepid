@@ -1,0 +1,567 @@
+{%- capture siteHeader -%}
+{%- assign secSt = section.settings -%}
+{%- if section.blocks.size > 0 -%}
+<div class="tophwrap{% if secSt.hidem %} hide-sm hide-md{% endif %}" style="--cl:{{ secSt.cl }};--clh:{{ secSt.clh }};--fs:{{ secSt.fs }}px;--fw:{{ secSt.fw }};--bg:{{ secSt.bg }};--bdr:{{ secSt.btmbd }};--mih:{{ secSt.mih }}px;">
+    <div class="fl f-col f-row-md top_hdr f-aic{% if section.settings.sw or settings.layout_style == 'fullwidth' %} fw-sec{% else %} page-width{% endif %}{% if secSt.tu %} ttu{% endif %}">
+        {%- for block in section.blocks limit: section.blocks.size -%}
+            {%- assign blkSt = block.settings -%}
+            {%- if block.type == 'menu' -%}
+                <div class="tmenu fl1 {{ blkSt.al }}{% if blkSt.hdm %} hide-sm hide-md{% endif %}">
+                    {%- for link in linklists[blkSt.menu].links -%}
+                        <a href="{{ link.url }}">{{ link.title }}</a>{% unless forloop.last %}&nbsp; | &nbsp;{% endunless %}
+                    {%- endfor -%}
+                </div>
+            {%- elsif block.type == 'text' and blkSt.txt != blank -%}
+                <div class="ttxt fl fl1 gap {{ blkSt.al }}{% if blkSt.hdm %} hide-sm hide-md{% endif %}" style="--icon_size:{{ blkSt.icon_size }}px;--gap:15px;--gapm:10px;">
+                   <p class="mb0"> {% if blkSt.image1 != blank and blkSt.icon == 'custom' %}<img loading="lazy" class="at-icon mr5" src="{{ blkSt.image1 | image_url: width: '60' }}" width="18" height="18" alt="" />{% else %}{% render 'icons', icon: blkSt.icon %} {% endif %}                                                                                                       
+                    {{ blkSt.txt }}</p>
+                   <p class="mb0"> {% if blkSt.image2 != blank and blkSt.icon2 == 'custom' %}<img loading="lazy" class="at-icon mr5" src="{{ blkSt.image2 | image_url: width: '60' }}" width="18" height="18" alt="" />{% else %}{% render 'icons', icon: blkSt.icon2 %} {% endif %}                                                                                                       
+                    {{ blkSt.txt2 }}</p>
+                </div>
+            {%- elsif block.type == 'sc' -%}
+                <div class="tscl fl1 {{ blkSt.al }}{% if blkSt.hdm %} hide-sm hide-md{% endif %}">
+                    {% render 'social-media' %}
+                </div>
+            {%- elsif block.type == 'cl' -%}
+                <div class="tcrlg fl1 {{ blkSt.al }} fl f-aic{% if blkSt.hdm %} hide-sm hide-md{% endif %}">
+                    {%- if blkSt.menu != blank -%}
+                        <div class="menu">{% for link in linklists[blkSt.menu].links %}<a href="{{ link.url }}">{{ link.title }}</a>{% unless forloop.last %}&nbsp; | &nbsp;{% endunless %}{% endfor %}</div>
+                        <span class="dbi">|</span>
+                    {%- endif -%}
+                    {%- if blkSt.sc -%}{% render 'social-media' %}<span class="dbi">|</span>{%- endif -%}
+                    {%- if blkSt.txt != blank -%}<div class="txt">{{ blkSt.txt }}</div><span class="dbi hide-sm hide-md">|</span>{%- endif -%}
+                    {% if settings.mlcurrency or settings.mlLang %}{% render 'currencyLang' %}{% endif %}
+                </div>
+            {%- endif -%}
+        {%- endfor -%}
+    </div>
+</div>
+{%- endif -%}
+{%- endcapture -%}
+{{ siteHeader | strip_newlines | remove: "	" | remove: "  " }}
+{% schema %}
+{
+    "name": "Top Header",
+    "class":"section-header",
+    "max_blocks": 3,
+    "settings": [
+       {
+          "type":"paragraph",
+           "content":"Hide from [theme settings](/editor?context=theme&category=Header)"
+        },
+        {
+            "type": "checkbox",
+            "id": "sw",
+            "label": "Fullwidth?",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hidem",
+            "label": "Hide in mobile?",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Header Appearance ====="
+        },
+		 {
+            "type": "range",
+            "id": "mih",
+            "label": "Min. Height",
+            "default":38,
+            "min": 35,
+            "max": 60,
+            "step": 1,
+            "unit": "px"
+       },
+        {
+            "type": "range",
+            "id": "fs",
+            "label": "Font Size",
+            "min": 10,
+            "max": 30,
+            "step": 1,
+            "default": 11,
+            "unit": "px"
+        },
+        {
+                    "type": "select",
+                    "id": "fw",
+                    "label": "Font Weight",
+                    "default": "500",
+                    "options": [
+                        {
+                            "value": "300",
+                            "label": "Light"
+                        },
+                        {
+                            "value": "400",
+                            "label": "Regular"
+                        },
+                        {
+                            "value": "500",
+                            "label": "Medium"
+                        },
+                        {
+                            "value": "600",
+                            "label": "Semi Bold"
+                        },
+                        {
+                            "value": "700",
+                            "label": "Bold"
+                        }
+                    ]
+        }, 
+		{
+            "type": "checkbox",
+            "id": "tu",
+            "label": "Use Uppercase?",
+            "default": false
+        },
+        {
+            "type": "color",
+            "id": "cl",
+            "label": "Text & Links",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "clh",
+            "label": "Text & Links Hover",
+            "default": "#fff"
+        },
+        {
+            "type": "color",
+            "id": "bg",
+            "label": "Background",
+            "default": "#000"
+        },
+        {
+            "type": "color",
+            "id": "btmbd",
+            "label": "Bottom Border",
+            "default": "#000"
+        }   
+    ],
+    "blocks": [
+      {
+        "type": "menu",
+        "name": "Menu",
+        "settings": [
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "Select Menu",
+            "default": "main-menu"
+          },
+          {
+                "type": "checkbox",
+                "id": "hdm",
+                "label": "Hide in Mobile?",
+                "default": false
+          },
+          {
+            "type": "select",
+            "id": "al",
+            "label": "Text Align",
+			"default": "tl",
+            "options": [
+              { "value": "tl", "label": "Left" },
+              { "value": "tc f-jcc", "label": "Center" },
+              { "value": "tr f-jce", "label": "Right" }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+            {
+					"type": "select",
+					"id": "icon",
+					"label": "Icon",
+					"default": "phone2",
+					"options": [
+                       {
+							"value": "none",
+							"label": "None"
+						},
+					    {
+							"value": "custom",
+							"label": "Custom"
+						},
+						{
+							"value": "check",
+							"label": "Check"
+						},
+                       {
+							"value": "check2",
+							"label": "Check 2"
+						},	
+						{
+							"value": "truck",
+							"label": "Truck"
+						},
+                        {
+							"value": "email",
+							"label": "Email"
+						},
+                        {
+							"value": "phone",
+							"label": "Phone"
+						},
+                       {
+							"value": "phone2",
+							"label": "Phone 2"
+						},
+                        {
+							"value": "comment",
+							"label": "Comment"
+						},
+						{
+							"value": "support",
+							"label": "Support"
+						},
+                        {
+							"value": "dollar",
+							"label": "Dollar"
+						},												
+						{
+							"value": "package",
+							"label": "Package"
+						},
+                        {
+							"value": "return",
+							"label": "Return"
+						},
+                        {
+							"value": "rocket",
+							"label": "Rocket"
+						},	
+                       {
+							"value": "plane",
+							"label": "Plane"
+						},						               						
+					   {
+							"value": "heart",
+							"label": "Heart"
+						},										
+						{
+							"value": "star",
+							"label": "Star"
+						},
+                        {
+							"value": "like",
+							"label": "Like"
+						}, 								
+                        {
+							"value": "info",
+							"label": "Info."
+						}, 
+                      {
+							"value": "tag",
+							"label": "Tag"
+						},
+                        {
+							"value": "tag2",
+							"label": "Tag"
+						},			
+						{
+							"value": "globe",
+							"label": "Globe"
+						},
+                       {
+							"value": "earth",
+							"label": "Earth"
+						},
+                       {
+							"value": "gift",
+							"label": "Gift"
+						},
+                       {
+							"value": "location",
+							"label": "Location"
+						},
+                       {
+							"value": "shop",
+							"label": "Shop"
+						},
+                        {
+                           "value":"time",
+                           "label": "Time"
+                        },
+                       {
+							"value": "rain",
+							"label": "Rain"
+						},
+                       {
+							"value": "sun",
+							"label": "Sun"
+						},
+                       {
+							"value": "cloud",
+							"label": "Cloud"
+						},                                              
+                       {
+							"value": "care2",
+							"label": "Care"
+						}                                                       
+					]                  
+				},            
+				{
+					"type": "image_picker",
+					"id": "image1",
+					"label": "Custom Icon",
+                    "visible_if":"{{ block.settings.icon == 'custom' }}"
+				}, 
+              {
+                "type": "range",
+                "id": "icon_size",
+                "label": "Icon Size",
+                "min": 10,
+                "max": 30,
+                "step": 1,
+                "default": 13,
+                "unit": "px",
+                "visible_if":"{{ block.settings.icon == 'custom' or  block.settings.icon != 'none' }}"
+            },
+            {
+                "type": "textarea",
+                "id": "txt",
+                "label": "Text",
+                "default":"Available 24/7 at +566 4444 9940"
+            },
+          {
+					"type": "select",
+					"id": "icon2",
+					"label": "Icon",
+					"default": "email",
+					"options": [
+                       {
+							"value": "none",
+							"label": "None"
+						},
+					    {
+							"value": "custom",
+							"label": "Custom"
+						},
+						{
+							"value": "check",
+							"label": "Check"
+						},
+                       {
+							"value": "check2",
+							"label": "Check 2"
+						},	
+						{
+							"value": "truck",
+							"label": "Truck"
+						},
+                        {
+							"value": "email",
+							"label": "Email"
+						},
+                        {
+							"value": "phone",
+							"label": "Phone"
+						},
+                       {
+							"value": "phone2",
+							"label": "Phone 2"
+						},
+                        {
+							"value": "comment",
+							"label": "Comment"
+						},
+						{
+							"value": "support",
+							"label": "Support"
+						},
+                        {
+							"value": "dollar",
+							"label": "Dollar"
+						},												
+						{
+							"value": "package",
+							"label": "Package"
+						},
+                        {
+							"value": "return",
+							"label": "Return"
+						},
+                        {
+							"value": "rocket",
+							"label": "Rocket"
+						},	
+                       {
+							"value": "plane",
+							"label": "Plane"
+						},						               						
+					   {
+							"value": "heart",
+							"label": "Heart"
+						},										
+						{
+							"value": "star",
+							"label": "Star"
+						},
+                        {
+							"value": "like",
+							"label": "Like"
+						}, 								
+                        {
+							"value": "info",
+							"label": "Info."
+						}, 
+                      {
+							"value": "tag",
+							"label": "Tag"
+						},
+                        {
+							"value": "tag2",
+							"label": "Tag"
+						},			
+						{
+							"value": "globe",
+							"label": "Globe"
+						},
+                       {
+							"value": "earth",
+							"label": "Earth"
+						},
+                       {
+							"value": "gift",
+							"label": "Gift"
+						},
+                       {
+							"value": "location",
+							"label": "Location"
+						},
+                       {
+							"value": "shop",
+							"label": "Shop"
+						},
+                        {
+                           "value":"time",
+                           "label": "Time"
+                        },
+                       {
+							"value": "rain",
+							"label": "Rain"
+						},
+                       {
+							"value": "sun",
+							"label": "Sun"
+						},
+                       {
+							"value": "cloud",
+							"label": "Cloud"
+						},                                              
+                       {
+							"value": "care2",
+							"label": "Care"
+						}                                                       
+					]                  
+				},            
+				{
+					"type": "image_picker",
+					"id": "image2",
+					"label": "Custom Icon",
+                    "visible_if":"{{ block.settings.icon2 == 'custom' }}"
+				},              
+              {
+                "type": "textarea",
+                "id": "txt2",
+                "label": "Text",
+                "default":"sales@yourstorename.com"
+            },
+            {
+                "type": "checkbox",
+                "id": "hdm",
+                "label": "Hide in Mobile?",
+                "default": false
+            },
+          {
+            "type": "select",
+            "id": "al",
+            "label": "Text Align",
+			"default": "tl",
+            "options": [
+              { "value": "tl", "label": "Left" },
+              { "value": "tc f-jcc", "label": "Center" },
+              { "value": "tr f-jce", "label": "Right" }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "sc",
+        "name": "Social Icons",
+        "settings": [
+            {
+                "type": "checkbox",
+                "id": "hdm",
+                "label": "Hide in Mobile?",
+                "default": false
+            },
+          {
+            "type": "select",
+            "id": "al",
+            "label": "Text Align",
+			"default": "tl",
+            "options": [
+              { "value": "tl", "label": "Left" },
+              { "value": "tc f-jcc", "label": "Center" },
+              { "value": "tr f-jce", "label": "Right" }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "cl",
+        "name": "Currency, Language & ...",
+        "settings": [
+             {
+                "type": "paragraph",
+                "content": "Manage Currency & Language from Theme Settings"               
+            },
+            {
+                "type": "checkbox",
+                "id": "sc",
+                "label": "Show Social?",
+                "default": false
+            },
+            {
+                "type": "link_list",
+                "id": "menu",
+                "label": "Select Menu"
+            },
+            {
+                "type": "textarea",
+                "id": "txt",
+                "label": "Text"               
+            },
+            {
+                "type": "checkbox",
+                "id": "hdm",
+                "label": "Hide in Mobile?",
+                "default": false
+            },
+          {
+            "type": "select",
+            "id": "al",
+            "label": "Text Align",
+			"default": "tr f-jce",
+            "options": [
+              { "value": "tl", "label": "Left" },
+              { "value": "tc f-jcc", "label": "Center" },
+              { "value": "tr f-jce", "label": "Right" }
+            ]
+          }
+        ]
+      }
+    ]
+}
+{% endschema %}

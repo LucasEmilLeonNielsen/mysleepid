@@ -1,0 +1,351 @@
+{%- capture instagram -%}
+{% assign secSt = section.settings %}
+<div class="sec_cov{% if secSt.hidem %} hide-sm{% endif %}{% if secSt.hided %} hide-md hide-lg{% endif %}" style="--sbg:{% if secSt.bgg != blank %}{{ secSt.bgg }}{% else %}{{ secSt.bg }}{% endif %};--sst:{{ secSt.sst }}px;--ssb:{{ secSt.ssb }}px;--sstm:{{ secSt.sstm }}px;--ssbm:{{ secSt.ssbm }}px;--ttp:{{ secSt.tbp }}px;--tbp:{{ secSt.tbp | plus : 4 }}px">
+    <div class="{% if section.settings.sw %}fw-sec{% if section.settings.npd %} npd{% endif %}{% else %}page-width{% endif %} cl_box {{ section.settings.style }}" id="sliderbox-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="carousel">   	
+        {% render 'sec-title' %}
+        {% if secSt.style == '2' %}<div class="arwOut pr">{% endif %}
+        <div class="grid gspace rwcols-{{ section.settings.gridmb }} rwcols-md-{{ section.settings.gridtb }} rwcols-lg-{{ section.settings.grid }}{% if section.settings.carousel %} swiper arwOut{% endif %}"
+             {% if secSt.style == '2'  %}
+                 id="swp{{ section.id }}" data-slider-options='{ "slidesPerView":"auto", "loop":true, {% if secSt.autoplay %}"autoplay":{ "delay":"{{ secSt.speed | times: 1000 }}" },{% endif %} "navigation":{ "nextEl":".swn{{ section.id }}","prevEl":".swp{{ section.id }}" },"pagination":{ "el":".swpg{{ section.id }}","clickable":true }}'
+             {% endif %}
+             style="--brad:{{ section.settings.irad }}px;--grsp:0 -{{ section.settings.gspace | divided_by: 2.0 }}px;--grspi:0 {{ section.settings.gspace | divided_by: 2.0 }}px {{ section.settings.gspace }}px;--grspm:0 -{{ section.settings.gspacem | divided_by: 2.0 }}px;--grspim:0 {{ section.settings.gspacem | divided_by: 2.0 }}px {{ section.settings.gspacem }}px;">
+            {% if  secSt.style == '2'  %}<div class="swiper-wrapper">{% endif %}          
+            {% for block in section.blocks limit: section.blocks.size %}
+                {% assign product_box = forloop.index | minus:1 %}               
+                <div class="swiper-slide gitem of_hidden" id="{{ block.id }}" {{ block.shopify_attributes }}>
+                  {% if block.settings.image != blank %}                
+                      <a class="db fl f-aic f-jcc pr of_hidden" href="{{ block.settings.url }}" {% if block.settings.newtab %} target="_blank" {% endif  %}>
+                        <span class="db fl f-aic f-jcc pa insta_icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></span>                        
+                          <img class="imgFl lazyload wow zoomIn" loading="lazy" src="{{ block.settings.image | img_url: '50x' }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}"
+                            data-srcset="{% render 'lazyload', image: block.settings.image, sizes: '300,500,750,1000,1350,1600' %}" data-sizes="auto" alt="{{ block.settings.image.alt | escape }}" />
+                     </a>                                      
+                {% else %}                   
+                     {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}{{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}                  
+                {% endif %}
+                </div>
+            {% endfor %}
+            {% if section.blocks.size == 0 %}{% render 'no-blocks' %}{% endif %}
+        </div>
+            {% if  secSt.style == '2' %}
+                    </div>
+                    <div class="swarw swn{{ section.id }} swiper-button-next{% unless secSt.arrowm %} hide-sm{% endunless %}{% unless secSt.arrow %} hide-md hide-lg{% endunless %}"></div>
+                    <div class="swarw swp{{ section.id }} swiper-button-prev{% unless secSt.arrowm %} hide-sm{% endunless %}{% unless secSt.arrow %} hide-md hide-lg{% endunless %}"></div>
+                    <div class="swiper-pagination swpg{{ section.id }}{% unless secSt.dotm %} hide-sm{% endunless %}{% unless secSt.dot %} hide-md hide-lg{% endunless %}"></div>
+                </div>
+            {% endif %}
+    </div>
+</div>
+{%- endcapture -%}
+{{ instagram | strip_newlines | remove: "  " | remove: "	" }}
+{% schema %}
+{
+    "name": "Instagram",
+    "class": "instagram",
+    "disabled_on": {
+        "groups": ["header", "footer"]
+    },
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Instagram Gallery"		
+        },
+        {
+            "type": "textarea",
+            "id": "subtitle",
+            "label": "Sub Heading"           
+        },	  	                
+        {
+            "type": "header",
+            "content": "Grid Appearance ==="
+        }, 	         
+        {
+            "type": "range",
+            "id": "gspace",
+            "label": "Grid gap",
+            "default": 20,
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit":"px"
+        },
+        {
+            "type": "range",
+            "id": "gspacem",
+            "label": "Grid gap (mobile)",
+            "default": 10,
+            "min": 0,
+            "max": 15,
+            "step": 1,
+            "unit":"px"		
+        },
+        {
+            "type": "select",
+            "id": "style",
+            "label": "Grid Style",
+            "default": "1",
+            "options": [
+                { "value": "1", "label": "List" },
+                { "value": "2", "label": "Carousel" }              
+            ]
+        }, 	                 
+        {
+            "type": "paragraph",
+            "content": "Items per row ===",
+            "visible_if": "{{ section.settings.style == '1' }}"
+        }, 	
+        {
+            "type": "range",
+            "id": "grid",
+            "label": "Desktop",
+            "default": 4,
+            "min": 2,
+            "max": 8,
+            "step": 1,
+            "visible_if": "{{ section.settings.style == '1' }}"
+        },
+        {
+            "type": "range",
+            "id": "gridtb",
+            "label": "Tablet",
+            "default": 3,
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "visible_if": "{{ section.settings.style == '1' }}"
+        },
+        {
+            "type": "range",
+            "id": "gridmb",
+            "label": "Mobile",
+            "default": 2,
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "visible_if": "{{ section.settings.style == '1' }}"
+        },
+      {
+            "type": "checkbox",
+            "id": "dotm",
+            "label": "Show on Mobile?",
+            "default": true,
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },      
+        {
+            "type": "checkbox",
+            "id": "zoom",
+            "label": "Enable Image zoom on hover?",
+            "default": true
+        },
+       {
+            "type": "range",
+            "id": "irad",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "label": "Image Border Radius",
+            "unit": "px",
+            "default": 0
+        },    
+		{
+            "type": "header",
+            "content": "Carousel Settings ====",
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },        
+ 		{
+            "type": "checkbox",
+            "id": "autoplay",
+            "label": "Auto-rotate Slide",
+            "default": false,
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },
+        {
+            "type": "range",
+            "id": "speed",
+            "label": "Change Slide Every",
+            "default": 5,
+            "min": 1,
+            "max": 30,
+            "step": 1,
+            "unit": "Sec",
+             "visible_if": "{{ section.settings.style == '2' }}"
+        },
+		{
+            "type": "paragraph",
+            "content": "Arrows ====",
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },
+		{
+            "type": "checkbox",
+            "id": "arrow",
+            "label": "Show on Desktop?",
+            "default": true,
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },
+		{
+            "type": "checkbox",
+            "id": "arrowm",
+            "label": "Show on Mobile?",
+            "default": false,
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },
+		{
+            "type": "paragraph",
+            "content": "Dot Navigation ====",
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },
+		{
+            "type": "checkbox",
+            "id": "dot",
+            "label": "Show on Desktop?",
+            "default": false,
+            "visible_if": "{{ section.settings.style == '2' }}"
+        },		
+       {
+            "type": "range",
+            "id": "col-m",
+            "label": "Columns (desktop)",
+            "default": 2,
+            "min": 2,
+            "max": 5,
+            "step": 1,        
+            "visible_if": "{{ section.settings.style == '3' }}"
+        },    
+		{
+            "type": "header",
+            "content": "Section"
+        },
+		{
+            "type": "paragraph",
+            "content": "Spacing ===="
+        },
+		{
+			"type": "range",
+			"id": "sst",
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"label": "Top",
+			"unit": "px",
+			"default":30
+        },
+		{
+			"type": "range",
+			"id": "ssb",
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"label": "Bottom",
+			"unit": "px",
+			"default":30
+        },
+		{
+            "type": "paragraph",
+            "content": "Spacing (mobile) ===="
+        },
+		{
+			"type": "range",
+			"id": "sstm",
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"label": "Top",
+			"unit": "px",
+			"default":15
+        },
+		{
+			"type": "range",
+			"id": "ssbm",
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"label": "Bottom",
+			"unit": "px",
+			"default":15
+        },       
+        {
+            "type": "color",
+            "id": "bg",
+            "label": "Background"        
+        },
+        {
+            "type": "color_background",
+            "id": "bgg",
+            "label": "Gradient Background"
+        },	
+        {
+            "type":"checkbox",
+            "id":"sw",
+            "label":"Fullwidth?",
+            "default": false,
+            "info":"Manage fullwidth padding from Theme Settings -> Layout Style"
+        },		       
+        {
+            "type":"checkbox",
+            "id":"npd",
+            "label":"No Padding?",
+            "default": false,
+            "info":"Remove left/right padding when fullwidth"
+        },
+		{
+            "type": "checkbox",
+            "id": "hidem",
+            "label": "Hide in Mobile?",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "hided",
+            "label": "Hide on Desktop?",
+            "default": false
+        } 
+    ],
+    "blocks": [
+        {
+            "type": "Image",
+            "name": "Image",
+            "settings": [              
+                {
+                    "type":"image_picker",
+                    "id":"image",
+                    "label":"Image"                   
+                },                             
+                {
+                    "type": "url",
+                    "id": "url",
+                    "label": "Url"                    
+                },
+                {
+                    "type":"checkbox",
+                    "id":"newtab",
+                    "label":"Open in tab?",
+                    "default":true
+                }               
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Instagram",      
+            "settings": {
+                "grid": 4
+            },
+            "blocks": [
+                {
+                    "type": "Image"
+                },
+                {
+                    "type": "Image"
+                },
+                {
+                    "type": "Image"
+                },
+                {
+                    "type": "Image"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

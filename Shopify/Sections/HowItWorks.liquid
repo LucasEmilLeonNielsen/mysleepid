@@ -1,0 +1,1335 @@
+<section id="sleepid-how-{{ section.id }}" class="sleepid-how-section" data-section-id="{{ section.id }}">
+  <div class="sleepid-how-surface">
+    <div class="sleepid-how-header">
+      <h2 class="sleepid-how-title">{{ section.settings.heading | escape }}</h2>
+      <p class="sleepid-how-subtitle">{{ section.settings.subheading | escape }}</p>
+      {% if section.settings.subtext != blank %}
+        <p class="sleepid-how-subtext">{{ section.settings.subtext | escape }}</p>
+      {% endif %}
+    </div>
+
+    <div class="sleepid-how-cards" role="list">
+      {% for block in section.blocks %}
+        <article class="sleepid-how-card" data-spotlight-card role="listitem" style="--sleepid-how-card-delay: {{ forloop.index0 | times: 150 }}ms" {{ block.shopify_attributes }}>
+          {% if block.settings.icon != blank %}
+            <div class="sleepid-how-card-icon" aria-hidden="true">{{ block.settings.icon }}</div>
+          {% endif %}
+          <h3 class="sleepid-how-card-title">{{ block.settings.title | escape }}</h3>
+          <p class="sleepid-how-card-description">{{ block.settings.description | escape }}</p>
+        </article>
+      {% endfor %}
+      <div class="sleepid-how-flow-line" aria-hidden="true"></div>
+    </div>
+
+    <div class="sleepid-how-proof">
+      <span class="sleepid-how-proof-text">{{ section.settings.proof_text | escape }}</span>
+      <div class="sleepid-how-proof-logos" role="list">
+        {% for index in (1..3) %}
+          {% assign image_id = 'proof_logo_' | append: index %}
+          {% assign alt_id = image_id | append: '_alt' %}
+          {% assign text_id = image_id | append: '_text' %}
+          {% assign text_color_id = image_id | append: '_text_color' %}
+          {% assign headline_id = image_id | append: '_headline' %}
+          {% assign body_id = image_id | append: '_body' %}
+          {% assign emblem_id = image_id | append: '_emblem' %}
+          {% assign emblem_color_id = image_id | append: '_emblem_color' %}
+          {% assign emblem_bg_id = image_id | append: '_emblem_background' %}
+          {% assign headline_color_id = image_id | append: '_headline_color' %}
+          {% assign body_color_id = image_id | append: '_body_color' %}
+          {% assign overlay_opacity_id = image_id | append: '_overlay_opacity' %}
+          {% assign filter_id = image_id | append: '_filter' %}
+          {% assign background_start_id = image_id | append: '_background_start' %}
+          {% assign background_end_id = image_id | append: '_background_end' %}
+
+          {% assign badge_image = section.settings[image_id] %}
+          {% assign badge_text = section.settings[text_id] %}
+          {% assign badge_headline = section.settings[headline_id] %}
+          {% assign badge_body = section.settings[body_id] %}
+          {% assign badge_emblem = section.settings[emblem_id] %}
+
+{% if badge_image != blank %}
+  {% assign has_badge_image = true %}
+{% else %}
+  {% assign has_badge_image = false %}
+{% endif %}
+
+{% if badge_text != blank %}
+  {% assign has_badge_text = true %}
+{% else %}
+  {% assign has_badge_text = false %}
+{% endif %}
+
+{% if badge_headline != blank %}
+  {% assign has_badge_headline = true %}
+{% else %}
+  {% assign has_badge_headline = false %}
+{% endif %}
+
+{% if badge_body != blank %}
+  {% assign has_badge_body = true %}
+{% else %}
+  {% assign has_badge_body = false %}
+{% endif %}
+
+{% if badge_emblem != blank %}
+  {% assign has_badge_emblem = true %}
+{% else %}
+  {% assign has_badge_emblem = false %}
+{% endif %}
+
+{% assign has_badge_image = badge_image | default: '' | size | gt: 0 %}
+
+
+          {% if should_render_badge %}
+            {% assign badge_filter = section.settings[filter_id] %}
+            {% if badge_filter == blank %}
+              {% assign badge_filter = section.settings.proof_logo_filter %}
+            {% endif %}
+            {% if badge_filter == blank %}
+              {% assign badge_filter = 'grayscale(1) contrast(1.08) brightness(1.05)' %}
+            {% endif %}
+
+            {% assign badge_overlay_opacity = section.settings[overlay_opacity_id] %}
+            {% if badge_overlay_opacity == blank %}
+              {% assign badge_overlay_opacity = section.settings.proof_logo_overlay_opacity %}
+            {% endif %}
+            {% if badge_overlay_opacity == blank %}
+              {% assign badge_overlay_opacity = 0 %}
+            {% endif %}
+
+            {% assign badge_emblem_color = section.settings[emblem_color_id] | default: '#4F73CD' %}
+            {% assign badge_emblem_background = section.settings[emblem_bg_id] | default: '#E6EEFF' %}
+            {% assign badge_headline_color = section.settings[headline_color_id] %}
+            {% if badge_headline_color == blank %}
+              {% assign badge_headline_color = section.settings.proof_badge_headline_color %}
+            {% endif %}
+            {% if badge_headline_color == blank %}
+              {% assign badge_headline_color = '#F8FAFF' %}
+            {% endif %}
+
+            {% assign badge_body_color = section.settings[body_color_id] %}
+            {% if badge_body_color == blank %}
+              {% assign badge_body_color = section.settings.proof_badge_body_color %}
+            {% endif %}
+            {% if badge_body_color == blank %}
+              {% assign badge_body_color = '#C7D2F8' %}
+            {% endif %}
+
+            {% assign badge_text_color = section.settings[text_color_id] %}
+            {% if badge_text_color == blank %}
+              {% assign badge_text_color = section.settings.proof_badge_text_color %}
+            {% endif %}
+            {% if badge_text_color == blank %}
+              {% assign badge_text_color = '#E2E8F0' %}
+            {% endif %}
+
+            {% assign badge_background_start = section.settings[background_start_id] %}
+            {% if badge_background_start == blank %}
+              {% assign badge_background_start = section.settings.proof_badge_background_start %}
+            {% endif %}
+            {% if badge_background_start == blank %}
+              {% assign badge_background_start = '#201C33' %}
+            {% endif %}
+
+            {% assign badge_background_end = section.settings[background_end_id] %}
+            {% if badge_background_end == blank %}
+              {% assign badge_background_end = section.settings.proof_badge_background_end %}
+            {% endif %}
+            {% if badge_background_end == blank %}
+              {% assign badge_background_end = '#151223' %}
+            {% endif %}
+
+            <article class="sleepid-how-proof-badge" role="listitem" data-proof-logo data-has-image="{{ has_badge_image }}" style="--sleepid-proof-logo-filter: {{ badge_filter }}; --sleepid-proof-logo-overlay-opacity: {{ badge_overlay_opacity | times: 0.01 }}; --sleepid-proof-badge-emblem-color: {{ badge_emblem_color }}; --sleepid-proof-badge-emblem-background: {{ badge_emblem_background }}; --sleepid-proof-badge-headline-color: {{ badge_headline_color }}; --sleepid-proof-badge-body-color: {{ badge_body_color }}; --sleepid-proof-badge-background: linear-gradient(135deg, {{ badge_background_start }}, {{ badge_background_end }});">
+              {% if has_badge_image or has_badge_text or has_badge_emblem %}
+                <div class="sleepid-how-proof-badge-top">
+                  {% if has_badge_image %}
+                    <div class="sleepid-how-proof-logo-visual">
+                      <img src="{{ badge_image | image_url: width: 400 }}" alt="{{ section.settings[alt_id] | escape }}" class="sleepid-how-proof-logo" loading="lazy" />
+                      <span class="sleepid-how-proof-logo-tint" aria-hidden="true"></span>
+                    </div>
+                  {% elsif has_badge_text %}
+                    <span class="sleepid-how-proof-logo-text" style="color: {{ badge_text_color }};">{{ badge_text | escape }}</span>
+                  {% endif %}
+
+                  {% if has_badge_emblem %}
+                    <span class="sleepid-how-proof-badge-emblem">{{ badge_emblem | escape }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if has_badge_headline %}
+                <h4 class="sleepid-how-proof-badge-headline">{{ badge_headline | escape }}</h4>
+              {% endif %}
+
+              {% if has_badge_body %}
+                <p class="sleepid-how-proof-badge-body">{{ badge_body | escape }}</p>
+              {% endif %}
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="sleepid-how-cta">
+      {% if section.settings.cta_label != blank %}
+        <a class="sleepid-how-cta-button" href="{{ section.settings.cta_link | default: '#' }}">{{ section.settings.cta_label | escape }}</a>
+      {% endif %}
+      {% if section.settings.cta_subtext != blank %}
+        <p class="sleepid-how-cta-subtext">{{ section.settings.cta_subtext | escape }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #sleepid-how-{{ section.id }} {
+    --sleepid-how-bg-start: {{ section.settings.bg_start }};
+    --sleepid-how-bg-end: {{ section.settings.bg_end }};
+    --sleepid-how-text-primary: {{ section.settings.text_primary }};
+    --sleepid-how-text-muted: {{ section.settings.text_muted }};
+    --sleepid-how-card-bg: rgba(255, 255, 255, 0.74);
+    --sleepid-how-card-border: rgba(255, 255, 255, 0.3);
+    --sleepid-how-card-shadow: 0 26px 45px rgba(255, 255, 255, 0.08);
+    --sleepid-how-card-spotlight: rgba(255, 255, 255, 0.7);
+    --sleepid-how-card-spotlight-rest: rgba(255, 255, 255, 0.2);
+    --sleepid-how-card-radius: 18px;
+    --sleepid-how-flow-glow: rgba(255, 255, 255, 0.75);
+    --sleepid-proof-badge-width: {{ section.settings.proof_badge_width }}px;
+    --sleepid-proof-badge-height: {{ section.settings.proof_badge_height }}px;
+    --sleepid-proof-logo-max-height: {{ section.settings.proof_logo_max_height }}px;
+    --sleepid-default-proof-logo-filter: {{ section.settings.proof_logo_filter | default: 'grayscale(1) contrast(1.08) brightness(1.05)' }};
+    --sleepid-default-proof-logo-overlay-opacity: {{ section.settings.proof_logo_overlay_opacity | default: 30 | times: 0.01 }};
+    --sleepid-how-cta-padding-y: {{ section.settings.cta_padding_y | default: 16 }}px;
+    --sleepid-how-cta-padding-x: {{ section.settings.cta_padding_x | default: 36 }}px;
+    --sleepid-how-cta-gradient: linear-gradient(135deg, {{ section.settings.cta_gradient_start }}, {{ section.settings.cta_gradient_end }});
+    --sleepid-how-cta-gradient-hover: linear-gradient(135deg, {{ section.settings.cta_gradient_end }}, {{ section.settings.cta_gradient_start }});
+    font-family: "Inter", "Satoshi", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--sleepid-how-text-primary);
+    background: linear-gradient(160deg, var(--sleepid-how-bg-start), var(--sleepid-how-bg-end));
+    padding: clamp(64px, 10vw, 136px) clamp(24px, 7vw, 80px);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 800ms ease, transform 800ms ease;
+  }
+
+  #sleepid-how-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), transparent 60%),
+      radial-gradient(circle at 80% 10%, rgba(226, 236, 255, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+
+  #sleepid-how-{{ section.id }}.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #sleepid-how-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-surface {
+    max-width: 1080px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 5vw, 52px);
+    position: relative;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-subtitle {
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+    margin: 0;
+    color: var(--sleepid-how-text-muted);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-subtext {
+    margin: 0;
+    font-size: clamp(0.9rem, 2.1vw, 1rem);
+    color: var(--sleepid-how-text-muted);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(24px, 4vw, 36px);
+    align-items: stretch;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-flow-line {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    height: 2px;
+    width: 100%;
+    top: calc(50% + clamp(48px, 6vw, 58px));
+    left: 0;
+    background: linear-gradient(90deg, rgba(191, 214, 255, 0), var(--sleepid-how-flow-glow), rgba(191, 214, 255, 0));
+    filter: blur(0.5px);
+    animation: sleepidHowFlow 11s ease-in-out infinite;
+  }
+
+  @keyframes sleepidHowFlow {
+    0% { opacity: 0.55; }
+    50% { opacity: 0.95; }
+    100% { opacity: 0.55; }
+  }
+
+  @keyframes sleepidHowBeam {
+    0% { opacity: 0.65; }
+    45% { opacity: 0.95; }
+    100% { opacity: 0.65; }
+  }
+
+  @keyframes sleepidHowBeamPulse {
+    0% {
+      background-position: 0% 50%;
+      opacity: 0.3;
+    }
+    45% {
+      opacity: 0.58;
+    }
+    50% {
+      background-position: 100% 50%;
+      opacity: 0.62;
+    }
+    100% {
+      background-position: 0% 50%;
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes sleepidHowBeamPulseVertical {
+    0% {
+      background-position: 50% 0%;
+      opacity: 0.3;
+    }
+    45% {
+      opacity: 0.58;
+    }
+    50% {
+      background-position: 50% 100%;
+      opacity: 0.62;
+    }
+    100% {
+      background-position: 50% 0%;
+      opacity: 0.3;
+    }
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card {
+    position: relative;
+    z-index: 1;
+    padding: clamp(24px, 4vw, 32px);
+    border-radius: var(--sleepid-how-card-radius);
+    background: var(--sleepid-how-card-bg);
+    border: 1px solid var(--sleepid-how-card-border);
+    box-shadow: var(--sleepid-how-card-shadow);
+    backdrop-filter: blur(12px);
+    text-align: left;
+    overflow: hidden;
+    transition: opacity 680ms ease, transform 680ms ease, box-shadow 220ms ease, border-color 220ms ease, background 320ms ease;
+    transition-delay: var(--sleepid-how-card-delay, 0ms);
+    opacity: 0;
+    transform: translateY(24px);
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    background-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--sleepid-how-card-spotlight-rest), transparent 74%);
+  }
+
+  #sleepid-how-{{ section.id }}.is-visible .sleepid-how-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--sleepid-how-card-spotlight), transparent 70%);
+    opacity: 0.25;
+    transition: opacity 240ms ease, transform 360ms ease;
+    pointer-events: none;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: calc(var(--sleepid-how-card-radius) - 1px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    opacity: 0;
+    transition: opacity 240ms ease;
+    pointer-events: none;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card:hover,
+  #sleepid-how-{{ section.id }} .sleepid-how-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 70px rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.65);
+    background-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.55), transparent 70%);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card:hover::before,
+  #sleepid-how-{{ section.id }} .sleepid-how-card:focus-visible::before {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card:hover::after,
+  #sleepid-how-{{ section.id }} .sleepid-how-card:focus-visible::after {
+    opacity: 0.75;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card-icon {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin-bottom: clamp(16px, 3vw, 20px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card-title {
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    margin: 0 0 12px;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-card-description {
+    margin: 0;
+    color: var(--sleepid-how-text-muted);
+    font-size: clamp(0.95rem, 2.2vw, 1rem);
+    line-height: 1.55;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(6px, 2.2vw, 12px);
+    margin-top: clamp(-8px, -2vw, -4px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-text {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    color: var(--sleepid-how-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logos {
+    position: relative;
+    display: flex;
+    gap: clamp(18px, 4vw, 36px);
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: clamp(12px, 3vw, 18px) clamp(18px, 4vw, 28px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logos::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: clamp(12px, 5vw, 40px);
+    right: clamp(12px, 5vw, 40px);
+    height: 3px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, rgba(191, 214, 255, 0), rgba(255, 255, 255, 0.7), rgba(191, 214, 255, 0));
+    filter: blur(0.5px);
+    opacity: 0.85;
+    z-index: 0;
+    animation: sleepidHowBeam 9s ease-in-out infinite;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logos::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: clamp(18px, 6vw, 64px);
+    right: clamp(18px, 6vw, 64px);
+    height: 28px;
+    transform: translateY(-50%);
+    background: radial-gradient(circle at 0% 50%, rgba(255, 255, 255, 0.85), transparent 60%);
+    background-size: 220% 100%;
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    mix-blend-mode: screen;
+    opacity: 0.45;
+    animation: sleepidHowBeamPulse 14s linear infinite;
+    z-index: 0;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
+    justify-items: start;
+    gap: clamp(12px, 2.6vw, 16px);
+    flex: 1 1 minmax(0, var(--sleepid-proof-badge-width));
+    width: min(100%, var(--sleepid-proof-badge-width));
+    min-width: clamp(180px, var(--sleepid-proof-badge-width), 100%);
+    max-width: min(calc(var(--sleepid-proof-badge-width) + 24px), 100%);
+    min-height: clamp(150px, var(--sleepid-proof-badge-height), 240px);
+    padding: clamp(22px, 4vw, 28px);
+    border-radius: clamp(22px, 3.4vw, 26px);
+    background: var(--sleepid-proof-badge-background, linear-gradient(135deg, #201c33, #151223));
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 24px 48px rgba(181, 181, 181, 0.28);
+    overflow: hidden;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    color: rgba(255, 255, 255, 0.88);
+    transition: transform 260ms ease, box-shadow 260ms ease, border-color 220ms ease;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(211, 211, 211, 0.5), transparent 70%);
+    opacity: 0;
+    transition: opacity 220ms ease, transform 320ms ease;
+    pointer-events: none;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge:hover,
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge:focus-visible {
+    transform: translateY(-6px);
+    box-shadow: 0 32px 70px rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.42);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge:hover::before,
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge:focus-visible::before {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    gap: clamp(12px, 2.5vw, 18px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-emblem {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(34px, 5.8vw, 46px);
+    height: clamp(34px, 5.8vw, 46px);
+    border-radius: clamp(12px, 2vw, 16px);
+    background: var(--sleepid-proof-badge-emblem-background, rgba(255, 255, 255, 0.12));
+    color: var(--sleepid-proof-badge-emblem-color,rgb(252, 252, 252));
+    font-size: clamp(1.1rem, 2.8vw, 1.45rem);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(10px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-headline {
+    margin: 0;
+    font-size: clamp(1.1rem, 2.7vw, 1.4rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    color: var(--sleepid-proof-badge-headline-color,rgb(255, 255, 255));
+    text-align: left;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-body {
+    margin: 0;
+    font-size: clamp(0.92rem, 2.2vw, 1.02rem);
+    line-height: 1.55;
+    color: var(--sleepid-proof-badge-body-color, rgba(255, 255, 255, 0.82));
+    text-align: left;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logo-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: clamp(120px, 36%, 150px);
+    width: 100%;
+    min-height: clamp(36px, 5vw, 48px);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logo {
+    max-width: 100%;
+    max-height: var(--sleepid-proof-logo-max-height);
+    width: auto;
+    filter: var(--sleepid-proof-logo-filter, var(--sleepid-default-proof-logo-filter));
+    transition: opacity 220ms ease, filter 220ms ease;
+    object-fit: contain;
+    z-index: 1;
+    opacity: 0.92;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logo-tint {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.6), transparent 65%),
+      radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.35), transparent 70%),
+      linear-gradient(115deg, rgba(255, 255, 255, 0.22), transparent 70%);
+    opacity: var(--sleepid-proof-logo-overlay-opacity, var(--sleepid-default-proof-logo-overlay-opacity));
+    mix-blend-mode: screen;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge[data-has-image="true"]:hover .sleepid-how-proof-logo,
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge[data-has-image="true"]:focus-visible .sleepid-how-proof-logo {
+    opacity: 1;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge[data-has-image="true"]:hover .sleepid-how-proof-logo-tint,
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-badge[data-has-image="true"]:focus-visible .sleepid-how-proof-logo-tint {
+    opacity: min(1, calc(var(--sleepid-proof-logo-overlay-opacity, var(--sleepid-default-proof-logo-overlay-opacity)) * 1.25));
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-proof-logo-text {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    text-align: left;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sleepid-how-cta-padding-y) var(--sleepid-how-cta-padding-x);
+    border-radius: 999px;
+    background-image: var(--sleepid-how-cta-gradient);
+    color: #0f172a;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 240ms ease, box-shadow 240ms ease, background-image 240ms ease;
+    box-shadow: 0 18px 40px rgba(148, 163, 184, 0.22);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.45) 48%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 400ms ease;
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button:hover,
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button:focus-visible {
+    transform: translateY(-3px);
+    background-image: var(--sleepid-how-cta-gradient-hover);
+    box-shadow: 0 26px 56px rgba(95, 137, 209, 0.32);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button:hover::after,
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-button:focus-visible::after {
+    transform: translateX(120%);
+  }
+
+  #sleepid-how-{{ section.id }} .sleepid-how-cta-subtext {
+    margin: 0;
+    color: var(--sleepid-how-text-muted);
+    font-size: clamp(0.9rem, 2vw, 0.95rem);
+  }
+
+  @media (max-width: 899px) {
+    #sleepid-how-{{ section.id }} {
+      padding: clamp(64px, 14vw, 80px) clamp(18px, 8vw, 32px);
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-cards {
+      grid-template-columns: 1fr;
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-flow-line {
+      width: 2px;
+      height: calc(100% - clamp(36px, 8vw, 64px));
+      left: 50%;
+      top: clamp(60px, 12vw, 72px);
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(191, 214, 255, 0), var(--sleepid-how-flow-glow), rgba(191, 214, 255, 0));
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-card {
+      text-align: center;
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-card-description {
+      text-align: center;
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-logos {
+      flex-direction: column;
+      gap: clamp(18px, 6vw, 32px);
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-logos::before {
+      top: clamp(20px, 6vw, 36px);
+      bottom: clamp(20px, 6vw, 36px);
+      left: 50%;
+      right: auto;
+      width: 3px;
+      height: auto;
+      transform: translate(-50%, 0);
+      background: linear-gradient(180deg, rgba(191, 214, 255, 0), rgba(191, 214, 255, 0.7), rgba(191, 214, 255, 0));
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-logos::after {
+      top: clamp(24px, 7vw, 42px);
+      bottom: clamp(24px, 7vw, 42px);
+      left: 50%;
+      right: auto;
+      width: 28px;
+      height: auto;
+      transform: translate(-50%, 0);
+      background: radial-gradient(circle at 50% 0%, rgba(226, 236, 255, 0.85), transparent 60%);
+      background-size: 100% 220%;
+      background-position: 50% 0%;
+      background-repeat: no-repeat;
+      animation: sleepidHowBeamPulseVertical 14s linear infinite;
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-badge {
+      justify-items: center;
+      text-align: center;
+    }
+
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-headline,
+    #sleepid-how-{{ section.id }} .sleepid-how-proof-badge-body {
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var sectionId = 'sleepid-how-{{ section.id }}';
+    var observer = null;
+
+    function initSection() {
+      var section = document.getElementById(sectionId);
+      if (!section || section.dataset.initialized === 'true') {
+        return;
+      }
+
+      section.dataset.initialized = 'true';
+
+      var cards = section.querySelectorAll('[data-spotlight-card]');
+      cards.forEach(function(card) {
+        card.addEventListener('mousemove', handleMouseMove);
+        card.addEventListener('mouseleave', resetMousePosition);
+      });
+
+      var proofBadges = section.querySelectorAll('[data-proof-logo]');
+      proofBadges.forEach(function(badge) {
+        badge.addEventListener('mousemove', handleMouseMove);
+        badge.addEventListener('mouseleave', resetMousePosition);
+      });
+
+      if (window.Shopify && Shopify.designMode) {
+        section.classList.add('is-visible');
+        return;
+      }
+
+      observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            section.classList.add('is-visible');
+            if (observer) {
+              observer.disconnect();
+              observer = null;
+            }
+          }
+        });
+      }, { threshold: 0.35 });
+
+      observer.observe(section);
+    }
+
+    function cleanupSection() {
+      var section = document.getElementById(sectionId);
+      if (!section) {
+        return;
+      }
+
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+
+      var cards = section.querySelectorAll('[data-spotlight-card]');
+      cards.forEach(function(card) {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseleave', resetMousePosition);
+      });
+
+      var proofBadges = section.querySelectorAll('[data-proof-logo]');
+      proofBadges.forEach(function(badge) {
+        badge.removeEventListener('mousemove', handleMouseMove);
+        badge.removeEventListener('mouseleave', resetMousePosition);
+      });
+
+      delete section.dataset.initialized;
+    }
+
+    function handleMouseMove(event) {
+      var card = event.currentTarget;
+      var rect = card.getBoundingClientRect();
+      var x = event.clientX - rect.left;
+      var y = event.clientY - rect.top;
+      card.style.setProperty('--mouse-x', x + 'px');
+      card.style.setProperty('--mouse-y', y + 'px');
+    }
+
+    function resetMousePosition(event) {
+      var card = event.currentTarget;
+      card.style.setProperty('--mouse-x', '50%');
+      card.style.setProperty('--mouse-y', '50%');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSection);
+    } else {
+      initSection();
+    }
+
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail && event.detail.sectionId === '{{ section.id }}') {
+        initSection();
+      }
+    });
+
+    document.addEventListener('shopify:section:unload', function(event) {
+      if (event.detail && event.detail.sectionId === '{{ section.id }}') {
+        cleanupSection();
+      }
+    });
+
+    document.addEventListener('shopify:section:select', function(event) {
+      if (event.detail && event.detail.sectionId === '{{ section.id }}') {
+        var section = document.getElementById(sectionId);
+        if (section) {
+          section.classList.add('is-visible');
+        }
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SleepID - How it works",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How your SleepID is created"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subtitle",
+      "default": "From your answers → to your biology → to your precision protocol."
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "2-minute journey. 12 questions. Backed by chronobiology research."
+    },
+    {
+      "type": "color",
+      "id": "bg_start",
+      "label": "Background gradient start",
+      "default": "#F8FAFC"
+    },
+    {
+      "type": "color",
+      "id": "bg_end",
+      "label": "Background gradient end",
+      "default": "#EAEFF5"
+    },
+    {
+      "type": "color",
+      "id": "text_primary",
+      "label": "Primary text color",
+      "default": "#0F172A"
+    },
+    {
+      "type": "color",
+      "id": "text_muted",
+      "label": "Muted text color",
+      "default": "#64748B"
+    },
+    {
+      "type": "text",
+      "id": "proof_text",
+      "label": "Micro-proof text",
+      "default": "Based on research from Harvard, Stanford & Munich Center for Chronobiology."
+    },
+    {
+      "type": "color",
+      "id": "proof_badge_background_start",
+      "label": "Proof badge background start",
+      "default": "#201C33"
+    },
+    {
+      "type": "color",
+      "id": "proof_badge_background_end",
+      "label": "Proof badge background end",
+      "default": "#151223"
+    },
+    {
+      "type": "color",
+      "id": "proof_badge_headline_color",
+      "label": "Default proof badge headline color",
+      "default": "#F8FAFF"
+    },
+    {
+      "type": "color",
+      "id": "proof_badge_body_color",
+      "label": "Default proof badge body color",
+      "default": "#C7D2F8"
+    },
+    {
+      "type": "color",
+      "id": "proof_badge_text_color",
+      "label": "Default proof badge logo text color",
+      "default": "#E2E8F0"
+    },
+    {
+      "type": "range",
+      "id": "proof_badge_width",
+      "label": "Proof badge base width (px)",
+      "min": 160,
+      "max": 360,
+      "step": 10,
+      "default": 240
+    },
+    {
+      "type": "range",
+      "id": "proof_badge_height",
+      "label": "Proof badge base height (px)",
+      "min": 90,
+      "max": 220,
+      "step": 10,
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "proof_logo_max_height",
+      "label": "Proof logo max height (px)",
+      "min": 60,
+      "max": 160,
+      "step": 4,
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "proof_logo_overlay_opacity",
+      "label": "Logo shine intensity (%)",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_filter",
+      "label": "Logo CSS filter",
+      "default": "grayscale(1) contrast(1.08) brightness(1.05)",
+      "info": "Optional CSS filter string to adjust logo tone (e.g., 'grayscale(1) contrast(1.2)')."
+    },
+    {
+      "type": "image_picker",
+      "id": "proof_logo_one",
+      "label": "Proof logo 1"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_one_alt",
+      "label": "Proof logo 1 alt text",
+      "default": "Harvard University"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_one_text",
+      "label": "Proof badge 1 text (used when no image)",
+      "default": "Harvard"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_text_color",
+      "label": "Proof badge 1 text color",
+      "default": "#E2E8F0"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_one_headline",
+      "label": "Proof badge 1 headline",
+      "default": "Harvard Chronobiology Lab"
+    },
+    {
+      "type": "textarea",
+      "id": "proof_logo_one_body",
+      "label": "Proof badge 1 description",
+      "default": "Published melatonin phase research powering SleepID insights."
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_one_emblem",
+      "label": "Proof badge 1 emblem",
+      "default": "✦"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_emblem_color",
+      "label": "Proof badge 1 emblem color",
+      "default": "#4F73CD"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_emblem_background",
+      "label": "Proof badge 1 emblem background",
+      "default": "#E6EEFF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_headline_color",
+      "label": "Proof badge 1 headline color",
+      "default": "#F8FAFF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_body_color",
+      "label": "Proof badge 1 description color",
+      "default": "#C7D2F8"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_background_start",
+      "label": "Proof badge 1 background start"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_one_background_end",
+      "label": "Proof badge 1 background end"
+    },
+    {
+      "type": "range",
+      "id": "proof_logo_one_overlay_opacity",
+      "label": "Proof badge 1 logo overlay opacity (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_one_filter",
+      "label": "Proof badge 1 logo CSS filter",
+      "info": "Optional CSS filter string to fine-tune badge 1 logo contrast (e.g., 'grayscale(1) contrast(1.2)')."
+    },
+    {
+      "type": "image_picker",
+      "id": "proof_logo_two",
+      "label": "Proof logo 2"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_two_alt",
+      "label": "Proof logo 2 alt text",
+      "default": "Stanford University"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_two_text",
+      "label": "Proof badge 2 text (used when no image)",
+      "default": "Stanford"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_text_color",
+      "label": "Proof badge 2 text color",
+      "default": "#E2E8F0"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_two_headline",
+      "label": "Proof badge 2 headline",
+      "default": "Stanford Sleep Medicine Center"
+    },
+    {
+      "type": "textarea",
+      "id": "proof_logo_two_body",
+      "label": "Proof badge 2 description",
+      "default": "Maps circadian hormone timing to pinpoint your SleepID window."
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_two_emblem",
+      "label": "Proof badge 2 emblem",
+      "default": "☼"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_emblem_color",
+      "label": "Proof badge 2 emblem color",
+      "default": "#3561C6"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_emblem_background",
+      "label": "Proof badge 2 emblem background",
+      "default": "#E9F1FF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_headline_color",
+      "label": "Proof badge 2 headline color",
+      "default": "#F8FAFF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_body_color",
+      "label": "Proof badge 2 description color",
+      "default": "#C7D2F8"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_background_start",
+      "label": "Proof badge 2 background start"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_two_background_end",
+      "label": "Proof badge 2 background end"
+    },
+    {
+      "type": "range",
+      "id": "proof_logo_two_overlay_opacity",
+      "label": "Proof badge 2 logo overlay opacity (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_two_filter",
+      "label": "Proof badge 2 logo CSS filter",
+      "info": "Optional CSS filter string to fine-tune badge 2 logo contrast (e.g., 'grayscale(1) contrast(1.2)')."
+    },
+    {
+      "type": "image_picker",
+      "id": "proof_logo_three",
+      "label": "Proof logo 3"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_three_alt",
+      "label": "Proof logo 3 alt text",
+      "default": "Munich Center for Chronobiology"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_three_text",
+      "label": "Proof badge 3 text (used when no image)",
+      "default": "Munich"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_text_color",
+      "label": "Proof badge 3 text color",
+      "default": "#E2E8F0"
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_three_headline",
+      "label": "Proof badge 3 headline",
+      "default": "Munich Center for Chronobiology"
+    },
+    {
+      "type": "textarea",
+      "id": "proof_logo_three_body",
+      "label": "Proof badge 3 description",
+      "default": "Validates the protocol stack with peer-reviewed chrono-nutrition data."
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_three_emblem",
+      "label": "Proof badge 3 emblem",
+      "default": "☾"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_emblem_color",
+      "label": "Proof badge 3 emblem color",
+      "default": "#3B63C8"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_emblem_background",
+      "label": "Proof badge 3 emblem background",
+      "default": "#ECF3FF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_headline_color",
+      "label": "Proof badge 3 headline color",
+      "default": "#F8FAFF"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_body_color",
+      "label": "Proof badge 3 description color",
+      "default": "#C7D2F8"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_background_start",
+      "label": "Proof badge 3 background start"
+    },
+    {
+      "type": "color",
+      "id": "proof_logo_three_background_end",
+      "label": "Proof badge 3 background end"
+    },
+    {
+      "type": "range",
+      "id": "proof_logo_three_overlay_opacity",
+      "label": "Proof badge 3 logo overlay opacity (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "proof_logo_three_filter",
+      "label": "Proof badge 3 logo CSS filter",
+      "info": "Optional CSS filter string to fine-tune badge 3 logo contrast (e.g., 'grayscale(1) contrast(1.2)')."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Take the SleepID Test →"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "text",
+      "id": "cta_subtext",
+      "label": "CTA subtext",
+      "default": "2 minutes. 12 questions. No login."
+    },
+    {
+      "type": "color",
+      "id": "cta_gradient_start",
+      "label": "CTA gradient start",
+      "default": "#BFD6FF"
+    },
+    {
+      "type": "color",
+      "id": "cta_gradient_end",
+      "label": "CTA gradient end",
+      "default": "#E2ECFF"
+    },
+    {
+      "type": "range",
+      "id": "cta_padding_y",
+      "label": "CTA vertical padding (px)",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "cta_padding_x",
+      "label": "CTA horizontal padding (px)",
+      "min": 28,
+      "max": 88,
+      "step": 2,
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon or emoji",
+          "default": "🧠"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Understand your rhythm"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "You answer questions about your sleep and energy patterns."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "SleepID - How it works",
+      "category": "SleepID"
+    }
+  ]
+}
+{% endschema %}
